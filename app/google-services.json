@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "384196640862",
+    "project_id": "bestyou-26e86",
+    "storage_bucket": "bestyou-26e86.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:384196640862:android:347a43d9e411b0361334cf",
+        "android_client_info": {
+          "package_name": "com.example.bestyou"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzAm01PheIo0MNslRLm-ehd5pnwOC1oGM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
