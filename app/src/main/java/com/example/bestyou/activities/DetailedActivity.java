@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,8 +30,8 @@ import java.util.HashMap;
 
 public class DetailedActivity extends AppCompatActivity {
 
-    ImageView detailedImg;
-    TextView name, bodyPart;
+    ImageView detailedImg, leftArrow, rightArrow;
+    TextView name, bodyPart, dayTextView;
     Button addToPlan;
     /*ImageView addItems, removeItems;*/
 
@@ -48,6 +49,10 @@ public class DetailedActivity extends AppCompatActivity {
     PopularWorkoutsModel popularWorkoutsModel = null;
     FirebaseAuth auth;
     private FirebaseFirestore fireStore;
+    private int currentDayIndex = 0;
+    private String[] daysOfWeek = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+    private EditText sets, reps;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +87,13 @@ public class DetailedActivity extends AppCompatActivity {
         name = findViewById(R.id.detailed_name);
         bodyPart = findViewById(R.id.part);
 
+        dayTextView = findViewById(R.id.dayTextView);
+        leftArrow = findViewById(R.id.leftArrow);
+        rightArrow = findViewById(R.id.rightArrow);
         addToPlan = findViewById(R.id.add_to_plan);
+
+        sets = findViewById(R.id.editTextReps);
+        reps = findViewById(R.id.editTextSets);
 
         if (popularWorkoutsModel != null) {
             Glide.with(getApplicationContext()).load(popularWorkoutsModel.getImg_url()).into(detailedImg);
@@ -104,6 +115,21 @@ public class DetailedActivity extends AppCompatActivity {
                 addtoPlan();
             }
         });
+        leftArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                decrementDay();
+                updateDay();
+            }
+        });
+
+        rightArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                incrementDay();
+                updateDay();
+            }
+        });
     }
 
     private void addtoPlan() {
@@ -122,19 +148,37 @@ public class DetailedActivity extends AppCompatActivity {
         cartMap.put("bodyPart", bodyPart.getText().toString());
         cartMap.put("currentTime", saveCurrentTime);
         cartMap.put("currentDate", saveCurrentDate);
-        cartMap.put("totalQuantity", quantity.getText().toString());
-        cartMap.put("totalPrice", totalPrice);
+
+        cartMap.put("numberOfSets", sets.getText().toString());
+        cartMap.put("numberOfReps", reps.getText().toString());
+        cartMap.put("dayPlanned", dayTextView.getText().toString());
+
+        /*cartMap.put("totalQuantity", quantity.getText().toString());
+        cartMap.put("totalPrice", totalPrice);*/
 
         fireStore.collection("AddToCart").document(auth.getCurrentUser().getUid())
                 .collection("User").add(cartMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentReference> task) {
-                        Toast.makeText(DetailedActivity.this, "Added To A Cart", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DetailedActivity.this, "Added To A Plan", Toast.LENGTH_SHORT).show();
                         finish();
                     }
                 });
 
 
+    }
+    private void decrementDay() {
+        currentDayIndex = (currentDayIndex - 1 + daysOfWeek.length) % daysOfWeek.length;
+    }
+
+    private void incrementDay() {
+
+        currentDayIndex = (currentDayIndex + 1) % daysOfWeek.length;
+    }
+
+    private void updateDay() {
+
+        dayTextView.setText(daysOfWeek[currentDayIndex]);
     }
 }
 
