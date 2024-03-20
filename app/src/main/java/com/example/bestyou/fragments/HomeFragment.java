@@ -38,7 +38,7 @@ public class HomeFragment extends Fragment {
 
     TextView catShowAll, workoutPlanShowAll, popularWorkoutsShowAll;
 
-    RecyclerView catRecyclerview, workoutPlanRecyclerview, popularWorkoutRecyclerview;
+    RecyclerView catRecyclerview, workoutPlansRecyclerview, popularWorkoutRecyclerview;
 
     //Category recyclerview
     CategoryAdapter categoryAdapter;
@@ -64,7 +64,7 @@ public class HomeFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
 
         catRecyclerview = root.findViewById(R.id.rec_category);
-        workoutPlanRecyclerview = root.findViewById(R.id.new_product_rec);
+        workoutPlansRecyclerview = root.findViewById(R.id.new_product_rec);
         popularWorkoutRecyclerview = root.findViewById(R.id.popular_rec);
 
         catShowAll = root.findViewById(R.id.category_see_all);
@@ -128,12 +128,14 @@ public class HomeFragment extends Fragment {
                         }
                     }
                 });
-       /* workoutPlanRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity(),RecyclerView.HORIZONTAL,false));
+
+
+        workoutPlansRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity(),RecyclerView.HORIZONTAL,false));
         workoutPlansModelList = new ArrayList<>();
         workoutPlansAdapter = new WorkoutPlansAdapter(getContext(),workoutPlansModelList);
-        workoutPlanRecyclerview.setAdapter(workoutPlansAdapter);
+        workoutPlansRecyclerview.setAdapter(workoutPlansAdapter);
 
-        db.collection("WorkoutsPlans")
+        db.collection("WorkoutsPlanned")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -151,7 +153,7 @@ public class HomeFragment extends Fragment {
 
                         }
                     }
-                });*/
+                });
 
         //Popular Products
 
