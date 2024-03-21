@@ -224,23 +224,6 @@ public class CartActivity extends AppCompatActivity {
                             }
                         }
                     });
-
         }
-
-        /*fireStore.collection("AddToCart").document(auth.getCurrentUser().getUid())
-                .collection("User").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                        if (task.isSuccessful()) {
-                            for (DocumentSnapshot doc : task.getResult().getDocuments()) {
-
-                                MyCartModel myCartModel = doc.toObject(MyCartModel.class);
-                                cartModelList.add(myCartModel);
-                                cartAdapter.notifyDataSetChanged();
-                            }
-                        }
-                    }
-                });*/
     }
 }

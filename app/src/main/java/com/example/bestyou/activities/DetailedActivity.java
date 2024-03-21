@@ -144,7 +144,15 @@ public class DetailedActivity extends AppCompatActivity {
 
         final HashMap<String, Object> cartMap = new HashMap<>();
 
+        // Check which model is not null and get the image URL accordingly
+        String imageUrl = "";
+        if (popularWorkoutsModel != null) {
+            imageUrl = popularWorkoutsModel.getImg_url();
+        } else if (showAllWorkoutsModel != null) {
+            imageUrl = showAllWorkoutsModel.getImg_url();
+        }
 
+        cartMap.put("img_url", imageUrl);
         cartMap.put("workoutName", name.getText().toString());
         cartMap.put("bodyPart", bodyPart.getText().toString());
         cartMap.put("currentTime", saveCurrentTime);
@@ -153,9 +161,6 @@ public class DetailedActivity extends AppCompatActivity {
         cartMap.put("numberOfSets", sets.getText().toString());
         cartMap.put("numberOfReps", reps.getText().toString());
         cartMap.put("dayPlanned", dayTextView.getText().toString());
-
-        /*cartMap.put("totalQuantity", quantity.getText().toString());
-        cartMap.put("totalPrice", totalPrice);*/
 
         fireStore.collection("AddToCart").document(auth.getCurrentUser().getUid())
                 .collection("User").add(cartMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
