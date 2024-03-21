@@ -144,6 +144,7 @@ public class DetailedActivity extends AppCompatActivity {
 
         final HashMap<String, Object> cartMap = new HashMap<>();
 
+
         cartMap.put("workoutName", name.getText().toString());
         cartMap.put("bodyPart", bodyPart.getText().toString());
         cartMap.put("currentTime", saveCurrentTime);

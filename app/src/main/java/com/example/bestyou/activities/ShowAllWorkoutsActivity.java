@@ -10,8 +10,11 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.example.bestyou.R;
+import com.example.bestyou.adapters.MyCartAdapter;
 import com.example.bestyou.adapters.ShowAllWorkoutsAdapter;
+import com.example.bestyou.models.MyCartModel;
 import com.example.bestyou.models.ShowAllWorkoutsModel;
+import com.example.bestyou.models.WorkoutPlansModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -28,6 +31,8 @@ public class ShowAllWorkoutsActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     ShowAllWorkoutsAdapter showAllWorkoutsAdapter;
     List<ShowAllWorkoutsModel> showAllWorkoutsModelList;
+    MyCartAdapter myCartAdapter;
+    List<MyCartModel> myCartModelList;
 
     Toolbar toolbar;
 
@@ -176,5 +181,6 @@ public class ShowAllWorkoutsActivity extends AppCompatActivity {
                     });
 
         }
+
     }
 }

@@ -18,11 +18,13 @@ import com.denzcoskun.imageslider.ImageSlider;
 import com.denzcoskun.imageslider.constants.ScaleTypes;
 import com.denzcoskun.imageslider.models.SlideModel;
 import com.example.bestyou.R;
+import com.example.bestyou.activities.CartActivity;
 import com.example.bestyou.activities.ShowAllWorkoutsActivity;
 import com.example.bestyou.adapters.CategoryAdapter;
 import com.example.bestyou.adapters.PopularWorkoutsAdapter;
 import com.example.bestyou.adapters.WorkoutPlansAdapter;
 import com.example.bestyou.models.CategoryModel;
+import com.example.bestyou.models.MyCartModel;
 import com.example.bestyou.models.PopularWorkoutsModel;
 import com.example.bestyou.models.WorkoutPlansModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -43,6 +45,7 @@ public class HomeFragment extends Fragment {
     //Category recyclerview
     CategoryAdapter categoryAdapter;
     List<CategoryModel> categoryModelList;
+
 
     WorkoutPlansAdapter workoutPlansAdapter;
     List<WorkoutPlansModel> workoutPlansModelList;
@@ -82,7 +85,7 @@ public class HomeFragment extends Fragment {
         workoutPlanShowAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), ShowAllWorkoutsActivity.class);
+                Intent intent = new Intent(getContext(), CartActivity.class);
                 startActivity(intent);
             }
         });

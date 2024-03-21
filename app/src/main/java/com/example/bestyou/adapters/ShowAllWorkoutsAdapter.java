@@ -62,7 +62,7 @@ public class ShowAllWorkoutsAdapter extends RecyclerView.Adapter<ShowAllWorkouts
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            mItemImage = itemView.findViewById(R.id.workout_image);
+            mItemImage = itemView.findViewById(R.id.item_image);
             mBodyPart = itemView.findViewById(R.id.body_part);
             mName = itemView.findViewById(R.id.workout_name);
         }
