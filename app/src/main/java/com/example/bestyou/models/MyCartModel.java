@@ -10,9 +10,12 @@ public class MyCartModel implements Serializable {
     String numberOfReps;
     String numberOfSets;
     String dayPlanned;
+    String documentId;
+    private boolean isChecked;
 
     public MyCartModel() {
     }
+
 
     public MyCartModel(String img_url, String workoutName, String bodyPart, String numberOfReps, String numberOfSets, String dayPlanned) {
         this.img_url = img_url;
@@ -21,6 +24,22 @@ public class MyCartModel implements Serializable {
         this.numberOfReps = numberOfReps;
         this.numberOfSets = numberOfSets;
         this.dayPlanned = dayPlanned;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
+    public String getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(String documentId) {
+        this.documentId = documentId;
     }
 
     public String getImg_url() {
@@ -70,4 +89,5 @@ public class MyCartModel implements Serializable {
     public void setDayPlanned(String dayPlanned){
         this.dayPlanned = dayPlanned;
     }
+
 }
