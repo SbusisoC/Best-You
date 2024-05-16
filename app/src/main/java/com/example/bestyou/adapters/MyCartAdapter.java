@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bestyou.R;
 import com.example.bestyou.activities.CartActivity;
+import com.example.bestyou.activities.DetailedActivity;
 import com.example.bestyou.activities.ShowAllWorkoutsActivity;
 import com.example.bestyou.models.MyCartModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,9 +27,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,6 +43,7 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.ViewHolder
     private List<MyCartModel> list;
     FirebaseFirestore fireStore;
     FirebaseAuth auth;
+    private boolean isDoneClicked = false;
     private OnItemCheckedChangeListener listener;
 
     public MyCartAdapter(Context context, List<MyCartModel> list, OnItemCheckedChangeListener listener){
@@ -62,6 +68,13 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.ViewHolder
         holder.mName.setText(list.get(position).getWorkoutName());
         holder.Sets.setText(list.get(position).getNumberOfSets());
         holder.Reps.setText(list.get(position).getNumberOfReps());
+
+        if(isDoneClicked && list.get(position).isChecked()) {
+            holder.itemView.setAlpha(0.5f);
+
+        }else{
+            holder.itemView.setAlpha(1.0f);
+        }
 
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -130,7 +143,6 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.ViewHolder
         notifyDataSetChanged();
     }
 
-
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView mItemImage;
@@ -148,5 +160,10 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.ViewHolder
             Reps = itemView.findViewById(R.id.reps);
             checkBox = itemView.findViewById(R.id.checkBox);
         }
+    }
+
+    public void setDoneClicked(boolean doneClicked) {
+        isDoneClicked = doneClicked;
+        notifyDataSetChanged();
     }
 }
