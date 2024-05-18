@@ -17,36 +17,60 @@
         app:layout_constraintTop_toTopOf="parent"
         app:title="My Cart"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/show_all_rec"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_delete"
+        app:layout_constraintTop_toBottomOf="@id/my_cart_toolbar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/show_all_rec"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/my_cart_toolbar" />
+    </androidx.core.widget.NestedScrollView>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_left"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/my_cart_toolbar"/>
+        app:layout_constraintGuide_percent="0.55"
+        android:orientation="vertical" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintGuide_percent="0.6"
+        android:orientation="vertical" />
 
     <Button
         android:id="@+id/btn_done"
         android:layout_width="112dp"
         android:layout_height="50dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:text="Done"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/btn_delete"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_left"
         app:layout_constraintStart_toStartOf="parent" />
+        <!--app:layout_constraintTop_toTopOf="@+id/btn_delete"
+        tools:layout_editor_absoluteX="80dp" />-->
 
     <Button
         android:id="@+id/btn_delete"
         android:layout_width="112dp"
         android:layout_height="50dp"
+        android:layout_marginStart="16dp"
         android:layout_marginBottom="24dp"
         android:text="Delete"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toEndOf="@+id/btn_done" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -81,19 +81,18 @@ public class MyCartAdapter extends RecyclerView.Adapter<MyCartAdapter.ViewHolder
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Update the checked state of the item in the model
                 list.get(position).setChecked(isChecked);
-
                 listener.onCheckedChanged(position, isChecked);
             }
         });
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        /*holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, CartActivity.class);
                 /*intent.putExtra("dayPlanned",list.get(position).getDayPlanned());*/
-                context.startActivity(intent);
+               /* context.startActivity(intent);
             }
-        });
+        });*/
 
     }
     @Override
