@@ -11,19 +11,25 @@ public class MyCartModel implements Serializable {
     String numberOfSets;
     String dayPlanned;
     String documentId;
+    String currentDate;
+    String currentTime;
+    private String timestamp;
     private boolean isChecked;
-
+    private boolean isDateHeader;
     public MyCartModel() {
     }
 
 
-    public MyCartModel(String img_url, String workoutName, String bodyPart, String numberOfReps, String numberOfSets, String dayPlanned) {
+    public MyCartModel(String img_url, String workoutName, String bodyPart, String numberOfReps, String numberOfSets, String dayPlanned, String currentDate, String currentTime) {
         this.img_url = img_url;
         this.workoutName = workoutName;
         this.bodyPart = bodyPart;
         this.numberOfReps = numberOfReps;
         this.numberOfSets = numberOfSets;
         this.dayPlanned = dayPlanned;
+        this.isDateHeader = false;
+        this.currentDate = currentDate;
+        this.currentTime = currentTime;
     }
 
     public boolean isChecked() {
@@ -32,6 +38,20 @@ public class MyCartModel implements Serializable {
 
     public void setChecked(boolean checked) {
         isChecked = checked;
+    }
+    public boolean isDateHeader() {
+        return isDateHeader;
+    }
+
+    public void setDateHeader(boolean dateHeader) {
+        isDateHeader = dateHeader;
+    }
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     public String getDocumentId() {
@@ -88,6 +108,21 @@ public class MyCartModel implements Serializable {
 
     public void setDayPlanned(String dayPlanned){
         this.dayPlanned = dayPlanned;
+    }
+
+    public String getCurrentDate(){
+        return currentDate;
+    }
+
+    public void setCurrentDate(String currentDate){
+        this.currentDate = currentDate;
+    }
+    public String getCurrentTime(){
+        return currentTime;
+    }
+
+    public void setCurrentTime(String currentTime){
+        this.currentTime = currentTime;
     }
 
 }

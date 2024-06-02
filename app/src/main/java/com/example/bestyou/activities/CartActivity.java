@@ -26,11 +26,16 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnItemCheckedChangeListener {
 
@@ -71,209 +76,34 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
         sets = getIntent().getStringExtra("sets");
         reps = getIntent().getStringExtra("reps");
 
-
         fireStore = FirebaseFirestore.getInstance();
         recyclerView = findViewById(R.id.show_all_rec);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         myCartModelList = new ArrayList<>();
         myCartAdapter = new MyCartAdapter(this, myCartModelList, this);
         recyclerView.setAdapter(myCartAdapter);
 
+        final List<MyCartModel> allItems = new ArrayList<>();
+
+
         if (dayPlanned == null || dayPlanned.isEmpty()) {
-            fireStore.collection("AddToCart").document(auth.getCurrentUser().getUid())
-                    .collection("User")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                            if (task.isSuccessful()) {
-                                for (DocumentSnapshot doc : task.getResult().getDocuments()) {
-
-                                    MyCartModel myCartModel = doc.toObject(MyCartModel.class);
-                                    myCartModelList.add(myCartModel);
-                                    myCartModel.setDocumentId(doc.getId());
-                                    myCartAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        }
-                    });
-
-        }
-
-        if (dayPlanned != null && dayPlanned.equalsIgnoreCase("Sun")) {
-            fireStore.collection("AddToCart").document(auth.getCurrentUser().getUid())
-                    .collection("User").whereEqualTo("dayPlanned", "Sun")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                            if (task.isSuccessful()) {
-                                for (DocumentSnapshot doc : task.getResult().getDocuments()) {
-
-                                    String documentId = doc.getId();
-
-                                    MyCartModel myCartModel = doc.toObject(MyCartModel.class);
-
-                                    myCartModel.setDocumentId(documentId);
-                                    myCartModelList.add(myCartModel);
-                                    myCartModel.setDocumentId(doc.getId());
-                                    myCartAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        }
-                    });
-
-        }
-
-        if (dayPlanned != null && dayPlanned.equalsIgnoreCase("Mon")) {
-            fireStore.collection("AddToCart").document(auth.getCurrentUser().getUid())
-                    .collection("User").whereEqualTo("dayPlanned", "Mon")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                            if (task.isSuccessful()) {
-                                for (DocumentSnapshot doc : task.getResult().getDocuments()) {
-
-                                    MyCartModel myCartModel = doc.toObject(MyCartModel.class);
-                                    myCartModelList.add(myCartModel);
-                                    myCartModel.setDocumentId(doc.getId());
-                                    myCartAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        }
-                    });
-
-        }
-
-        if (dayPlanned != null && dayPlanned.equalsIgnoreCase("Tue")) {
-            fireStore.collection("AddToCart").document(auth.getCurrentUser().getUid())
-                    .collection("User").whereEqualTo("dayPlanned", "Tue")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                            if (task.isSuccessful()) {
-                                for (DocumentSnapshot doc : task.getResult().getDocuments()) {
-
-                                    MyCartModel myCartModel = doc.toObject(MyCartModel.class);
-                                    myCartModelList.add(myCartModel);
-                                    myCartModel.setDocumentId(doc.getId());
-                                    myCartAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        }
-                    });
-
-        }
-
-        if (dayPlanned != null && dayPlanned.equalsIgnoreCase("Wed")) {
-            fireStore.collection("AddToCart").document(auth.getCurrentUser().getUid())
-                    .collection("User").whereEqualTo("dayPlanned", "Wed")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                            if (task.isSuccessful()) {
-                                for (DocumentSnapshot doc : task.getResult().getDocuments()) {
-
-                                    MyCartModel myCartModel = doc.toObject(MyCartModel.class);
-                                    myCartModelList.add(myCartModel);
-                                    myCartModel.setDocumentId(doc.getId());
-                                    myCartAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        }
-                    });
-        }
-
-        if (dayPlanned != null && dayPlanned.equalsIgnoreCase("Thu")) {
-            fireStore.collection("AddToCart").document(auth.getCurrentUser().getUid())
-                    .collection("User").whereEqualTo("dayPlanned", "Thu")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                            if (task.isSuccessful()) {
-                                for (DocumentSnapshot doc : task.getResult().getDocuments()) {
-
-                                    MyCartModel myCartModel = doc.toObject(MyCartModel.class);
-                                    myCartModelList.add(myCartModel);
-                                    myCartModel.setDocumentId(doc.getId());
-                                    myCartAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        }
-                    });
-
-        }
-
-        if (dayPlanned != null && dayPlanned.equalsIgnoreCase("Fri")) {
-            fireStore.collection("AddToCart").document(auth.getCurrentUser().getUid())
-                    .collection("User").whereEqualTo("dayPlanned", "Fri")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                            if (task.isSuccessful()) {
-                                for (DocumentSnapshot doc : task.getResult().getDocuments()) {
-
-                                    MyCartModel myCartModel = doc.toObject(MyCartModel.class);
-                                    myCartModelList.add(myCartModel);
-                                    myCartModel.setDocumentId(doc.getId());
-                                    myCartAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        }
-                    });
-
-        }
-
-        if (dayPlanned != null && dayPlanned.equalsIgnoreCase("Sat")) {
-            fireStore.collection("AddToCart").document(auth.getCurrentUser().getUid())
-                    .collection("User").whereEqualTo("dayPlanned", "Sat")
-                    .get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-
-                            if (task.isSuccessful()) {
-                                for (DocumentSnapshot doc : task.getResult().getDocuments()) {
-
-                                    MyCartModel myCartModel = doc.toObject(MyCartModel.class);
-                                    myCartModelList.add(myCartModel);
-                                    myCartModel.setDocumentId(doc.getId());
-                                    myCartAdapter.notifyDataSetChanged();
-                                }
-                            }
-                        }
-                    });
+            loadDataForWeek(allItems);
+        } else {
+            loadDataForDay(dayPlanned, allItems);
         }
 
         deleteButton = findViewById(R.id.btn_delete);
-
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Call the removeCheckedItems method in your adapter
                 myCartAdapter.removeCheckedItems(fireStore, auth);
-                /* myCartAdapter.removeCheckedItems();*/
             }
         });
 
         doneButton = findViewById(R.id.btn_done);
-
         doneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Set the isDoneClicked flag to true when the "Done" button is clicked
                 myCartAdapter.setDoneClicked(true);
                 addToWorkoutComplete();
             }
@@ -282,7 +112,6 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
 
     @Override
     public void onCheckedChanged(int position, boolean isChecked) {
-        // Update the visibility of buttons based on the checkbox state
         if (isChecked) {
             doneButton.setVisibility(View.VISIBLE);
             deleteButton.setVisibility(View.VISIBLE);
@@ -293,23 +122,19 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
     }
 
     private void addToWorkoutComplete() {
-        // Get current date and time
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentDateandTime = sdf.format(Calendar.getInstance().getTime());
 
-        // Iterate through myCartModelList to check for checked items
         for (MyCartModel cartItem : myCartModelList) {
             if (cartItem.isChecked()) {
-                // Create a HashMap to hold workout details
                 HashMap<String, Object> workoutData = new HashMap<>();
                 workoutData.put("img_url", cartItem.getImg_url());
                 workoutData.put("workoutName", cartItem.getWorkoutName());
                 workoutData.put("bodyPart", cartItem.getBodyPart());
                 workoutData.put("numberOfReps", cartItem.getNumberOfReps());
                 workoutData.put("numberOfSets", cartItem.getNumberOfSets());
-                workoutData.put("timestamp", currentDateandTime); // Add timestamp
+                workoutData.put("timestamp", currentDateandTime);
 
-                // Add the workoutData to the "workoutDone" collection
                 fireStore.collection("WorkoutDone").document(auth.getCurrentUser().getUid())
                         .collection("User").add(workoutData).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                             @Override
@@ -319,6 +144,65 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
                         });
             }
         }
+    }
 
+    private void loadDataForWeek(final List<MyCartModel> allItems) {
+        String[] daysOfWeek = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
+
+        for (String day : daysOfWeek) {
+            loadDataForDay(day, allItems);
+        }
+    }
+
+    private void loadDataForDay(String day, final List<MyCartModel> allItems) {
+        fireStore.collection("AddToCart").document(auth.getCurrentUser().getUid())
+                .collection("User").whereEqualTo("dayPlanned", day)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            List<MyCartModel> tempList = new ArrayList<>();
+                            for (DocumentSnapshot doc : task.getResult().getDocuments()) {
+                                MyCartModel myCartModel = doc.toObject(MyCartModel.class);
+                                myCartModel.setDocumentId(doc.getId());
+                                tempList.add(myCartModel);
+                            }
+
+                            // Sort the list by date in descending order (latest first)
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                            Collections.sort(tempList, new Comparator<MyCartModel>() {
+                                @Override
+                                public int compare(MyCartModel o1, MyCartModel o2) {
+                                    try {
+                                        Date date1 = dateFormat.parse(o1.getCurrentDate());
+                                        Date date2 = dateFormat.parse(o2.getCurrentDate());
+                                        // Reverse the comparison to sort in descending order
+                                        return date2.compareTo(date1);
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                        return 0;
+                                    }
+                                }
+                            });
+
+                            // Add headers and items to the final list
+                            String lastProcessedDate = null;
+                            for (MyCartModel myCartModel : tempList) {
+                                String currentDate = myCartModel.getCurrentDate();
+                                if (currentDate != null && !currentDate.equals(lastProcessedDate)) {
+                                    MyCartModel dateHeader = new MyCartModel();
+                                    dateHeader.setDateHeader(true);
+                                    dateHeader.setCurrentDate(currentDate);
+                                    myCartModelList.add(dateHeader);
+                                    lastProcessedDate = currentDate;
+                                }
+                                myCartModelList.add(myCartModel);
+                            }
+
+                            myCartAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
     }
 }

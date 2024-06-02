@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bestyou.R;
 import com.example.bestyou.activities.CartActivity;
-import com.example.bestyou.activities.ShowAllWorkoutsActivity;
 import com.example.bestyou.models.WorkoutPlansModel;
 
 import java.util.List;
