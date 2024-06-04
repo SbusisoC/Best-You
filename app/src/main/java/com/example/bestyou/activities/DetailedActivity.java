@@ -132,7 +132,7 @@ public class DetailedActivity extends AppCompatActivity {
         });
     }
 
-    private void addtoPlan() {
+      private void addtoPlan() {
 
         String saveCurrentTime, saveCurrentDate;
         Calendar calForDate = Calendar.getInstance();
@@ -157,6 +157,10 @@ public class DetailedActivity extends AppCompatActivity {
         cartMap.put("bodyPart", bodyPart.getText().toString());
         cartMap.put("currentTime", saveCurrentTime);
         cartMap.put("currentDate", saveCurrentDate);
+
+        //
+        cartMap.put("time",System.currentTimeMillis());
+        //
 
         cartMap.put("numberOfSets", sets.getText().toString());
         cartMap.put("numberOfReps", reps.getText().toString());
