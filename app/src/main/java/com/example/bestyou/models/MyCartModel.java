@@ -10,12 +10,16 @@ public class MyCartModel implements Serializable {
     String numberOfReps;
     String numberOfSets;
     String dayPlanned;
+    Long time;
     String documentId;
     String currentDate;
     String currentTime;
     private String timestamp;
     private boolean isChecked;
     private boolean isDateHeader;
+    
+
+   
     public MyCartModel() {
     }
 
@@ -60,6 +64,13 @@ public class MyCartModel implements Serializable {
 
     public void setDocumentId(String documentId) {
         this.documentId = documentId;
+    }
+     public Long getTime() {
+        return time;
+    }
+
+    public void setTime(Long time) {
+        this.time = time;
     }
 
     public String getImg_url() {
