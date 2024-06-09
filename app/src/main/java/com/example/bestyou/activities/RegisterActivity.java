@@ -13,12 +13,14 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.bestyou.R;
+import com.example.bestyou.models.UserModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -119,11 +121,18 @@ public class RegisterActivity extends AppCompatActivity {
                                     .setDisplayName(userName)
                                     .build();
 
-                            user.updateProfile(profileUpdates);
-                            Toast.makeText(RegisterActivity.this, "Account created.", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            startActivity(intent);
-                            finish();
+                            user.updateProfile(profileUpdates)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                // Save additional user data in Firestore
+                                                saveUserInFirestore(user, userName);
+                                            } else {
+                                                Toast.makeText(RegisterActivity.this, "Profile update failed.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -134,6 +143,29 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 });
 
+    }
+
+    private void saveUserInFirestore(FirebaseUser user, String userName) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        UserModel userModel = new UserModel();
+        userModel.setUsername(userName);
+        userModel.setUserId(user.getUid());
+
+        db.collection("users").document(user.getUid())
+                .set(userModel)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(RegisterActivity.this, "Account created.", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(RegisterActivity.this, "Firestore update failed.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
 
     public void signIn(View view) {

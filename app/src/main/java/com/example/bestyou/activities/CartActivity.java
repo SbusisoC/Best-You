@@ -170,22 +170,12 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
                             }
 
                             // Sort the list by date in descending order (latest first)
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-                            Collections.sort(tempList, new Comparator<MyCartModel>() {
-                                @Override
-                                public int compare(MyCartModel o1, MyCartModel o2) {
-                                    try {
-                                        Date date1 = dateFormat.parse(o1.getCurrentDate());
-                                        Date date2 = dateFormat.parse(o2.getCurrentDate());
-                                        // Reverse the comparison to sort in descending order
-                                        return date2.compareTo(date1);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                        return 0;
-                                    }
-                                }
+                            tempList.sort((o1, o2) -> {
+                                Long date1 = o1.getTime();
+                                Long date2 = o2.getTime();
+                                // Reverse the comparison to sort in descending order
+                                return date2.compareTo(date1);
                             });
-
                             // Add headers and items to the final list
                             String lastProcessedDate = null;
                             for (MyCartModel myCartModel : tempList) {
@@ -199,7 +189,6 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
                                 }
                                 myCartModelList.add(myCartModel);
                             }
-
                             myCartAdapter.notifyDataSetChanged();
                         }
                     }

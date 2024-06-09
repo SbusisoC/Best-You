@@ -16,4 +16,129 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_gravity="bottom"
+        android:backgroundTint="#f6f6f6"
+        app:fabCradleMargin="8dp"
+        app:fabCradleRoundedCornerRadius="40dp"
+        app:fabCradleVerticalOffset="6dp"
+        app:layout_constraintBottom_toBottomOf="@+id/home_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="BottomAppBar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:paddingTop="4dp"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:id="@+id/homeBtn"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="0.2"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/homeImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/home_icon" />
+
+                <TextView
+                    android:id="@+id/homeText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Home"
+                    android:textAlignment="center"
+                    android:textColor="#676767"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/progressBtn"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="0.2"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/stats_icon" />
+
+                <TextView
+                    android:id="@+id/profileText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Progress"
+                    android:textAlignment="center"
+                    android:textColor="#676767"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/notificationBtn"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="0.2"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <ImageView
+                    android:id="@+id/imageView6"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/bell_icon" />
+
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Notifications"
+                    android:textAlignment="center"
+                    android:textColor="#676767"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/profileBtn"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="0.2"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/supportImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/profile_icon" />
+
+                <TextView
+                    android:id="@+id/supportText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Profile"
+                    android:textAlignment="center"
+                    android:textColor="#676767"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </com.google.android.material.bottomappbar.BottomAppBar>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

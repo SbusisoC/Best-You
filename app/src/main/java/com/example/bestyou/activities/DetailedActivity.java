@@ -158,6 +158,10 @@ public class DetailedActivity extends AppCompatActivity {
         cartMap.put("currentTime", saveCurrentTime);
         cartMap.put("currentDate", saveCurrentDate);
 
+        //
+        cartMap.put("time",System.currentTimeMillis());
+        //
+
         cartMap.put("numberOfSets", sets.getText().toString());
         cartMap.put("numberOfReps", reps.getText().toString());
         cartMap.put("dayPlanned", dayTextView.getText().toString());
