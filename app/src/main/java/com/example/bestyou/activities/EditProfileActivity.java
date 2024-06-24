@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
@@ -26,8 +27,10 @@ import com.example.bestyou.utils.FirebaseUtil;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.Date;
 import java.util.Objects;
 
 import kotlin.Unit;
@@ -37,7 +40,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     ImageView profilePic;
     EditText usernameInput;
-    EditText weightInput;
+    EditText weightInput, initialWeightInput, userAgeInput, userTargetWeightInput;
     Button updateProfileBtn;
     ProgressBar progressBar;
     Toolbar toolbar;
@@ -45,6 +48,7 @@ public class EditProfileActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> imagePickLauncher;
     Uri selectedImageUri;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +69,10 @@ public class EditProfileActivity extends AppCompatActivity {
         usernameInput = findViewById(R.id.profile_username);
         updateProfileBtn = findViewById(R.id.profle_update_btn);
         progressBar = findViewById(R.id.profile_progress_bar);
-        weightInput = findViewById(R.id.Users_weight);
+        initialWeightInput = findViewById(R.id.Initial_weight);
+        weightInput = findViewById(R.id.Current_weight);
+        userAgeInput = findViewById(R.id.age);
+        userTargetWeightInput = findViewById(R.id.target_weight);
 
         getUserData();
 
@@ -106,11 +113,25 @@ public class EditProfileActivity extends AppCompatActivity {
 
     void updateBtnClick(){
         String userName = usernameInput.getText().toString();
+        String currentWeight = weightInput.getText().toString();
+        String initialWeight = initialWeightInput.getText().toString();
+        String userAge = userAgeInput.getText().toString();
+        String targetWeight = userTargetWeightInput.getText().toString();
+
         if(userName.isEmpty() || userName.length()<3){
             usernameInput.setError("Username length should be at least 3 chars");
             return;
         }
         currentUserModel.setUsername(userName);
+        currentUserModel.setCurrentWeight(currentWeight);
+        currentUserModel.setInitialWeight(initialWeight);
+        currentUserModel.setAge(userAge);
+        currentUserModel.setTargetWeight(targetWeight);
+
+        // Add a new weight entry
+        currentUserModel.addWeightEntry(currentWeight, new Timestamp(new Date()));
+
+
         setInProgress(true);
 
         if(selectedImageUri!=null){
@@ -167,7 +188,10 @@ public class EditProfileActivity extends AppCompatActivity {
                     currentUserModel = task.getResult().toObject(UserModel.class);
                     if (currentUserModel != null) {
                         usernameInput.setText(currentUserModel.getUsername());
-                        weightInput.setText(currentUserModel.getWeight());
+                        weightInput.setText(currentUserModel.getCurrentWeight());
+                        initialWeightInput.setText(currentUserModel.getInitialWeight());
+                        userAgeInput.setText(currentUserModel.getAge());
+                        userTargetWeightInput.setText(currentUserModel.getTargetWeight());
                     } else {
                         Toast.makeText(EditProfileActivity.this, "User data not found", Toast.LENGTH_SHORT).show();
                     }
