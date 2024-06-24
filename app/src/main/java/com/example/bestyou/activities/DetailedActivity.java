@@ -132,7 +132,7 @@ public class DetailedActivity extends AppCompatActivity {
         });
     }
 
-    private void addtoPlan() {
+      private void addtoPlan() {
 
         String saveCurrentTime, saveCurrentDate;
         Calendar calForDate = Calendar.getInstance();

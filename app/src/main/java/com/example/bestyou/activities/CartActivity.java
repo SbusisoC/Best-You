@@ -176,6 +176,7 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
                                 // Reverse the comparison to sort in descending order
                                 return date2.compareTo(date1);
                             });
+
                             // Add headers and items to the final list
                             String lastProcessedDate = null;
                             for (MyCartModel myCartModel : tempList) {
@@ -189,6 +190,7 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
                                 }
                                 myCartModelList.add(myCartModel);
                             }
+
                             myCartAdapter.notifyDataSetChanged();
                         }
                     }
