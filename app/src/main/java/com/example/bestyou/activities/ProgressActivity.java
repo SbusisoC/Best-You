@@ -47,7 +47,7 @@ public class ProgressActivity extends AppCompatActivity {
     Toolbar toolbar;
     FirebaseAuth auth;
     ImageView profilePic;
-    TextView username, currentWeight, initialWeight, targetWeight, completedSessionsTextView;
+    TextView username, currentWeight, initialWeight, targetWeight, completedSessions;
     UserModel currentUserModel;
     CardView currentWeightCard, initialWeightCard;
     private LineChart weightChart;
@@ -82,9 +82,7 @@ public class ProgressActivity extends AppCompatActivity {
         currentWeight = findViewById(R.id.users_current_weight);
         initialWeight = findViewById(R.id.users_initial_weight);
         targetWeight = findViewById(R.id.users_target_weight);
-
-
-        completedSessionsTextView = findViewById(R.id.users_completed_sessions);
+        completedSessions = findViewById(R.id.users_completed_sessions);
 
 
         FirebaseUtil.currentUserDetails().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -146,12 +144,12 @@ public class ProgressActivity extends AppCompatActivity {
                     if (task.isSuccessful() && task.getResult() != null) {
                         Long sessionCount = task.getResult().getLong("sessionCount");
                         if (sessionCount != null) {
-                            completedSessionsTextView.setText(String.valueOf(sessionCount));
+                            completedSessions.setText(String.valueOf(sessionCount));
                         } else {
-                            completedSessionsTextView.setText("0");
+                            completedSessions.setText("0");
                         }
                     } else {
-                        completedSessionsTextView.setText("0");
+                        completedSessions.setText("0");
                     }
                 });
     }

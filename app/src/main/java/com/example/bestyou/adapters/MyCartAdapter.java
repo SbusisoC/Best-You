@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.bestyou.R;
+import com.example.bestyou.activities.CartActivity;
 import com.example.bestyou.models.MyCartModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -96,7 +97,25 @@ public class MyCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 cartHolder.itemView.setAlpha(1.0f);
             }
 
+            cartHolder.checkBox.setOnCheckedChangeListener(null);
+
+            cartHolder.checkBox.setChecked(cartItem.isChecked());
             cartHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    cartItem.setChecked(isChecked);
+                    if (listener != null) {
+                        listener.onCheckedChanged(position, isChecked);
+                    }
+                    if (!isChecked) {
+                        ((CartActivity) context).removeFromWorkoutComplete(cartItem); // Call the remove method
+                        cartHolder.itemView.setAlpha(1.0f);
+                    }
+                }
+            });
+        }
+    }
+            /*cartHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     cartItem.setChecked(isChecked);
@@ -106,7 +125,7 @@ public class MyCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             cartHolder.checkBox.setChecked(cartItem.isChecked());
         }
-    }
+    }*/
 
     @Override
     public int getItemCount() {
@@ -141,6 +160,7 @@ public class MyCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             }
                         });
                 itemsToRemove.add(item);
+
             }
         }
         list.removeAll(itemsToRemove);
@@ -180,6 +200,10 @@ public class MyCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void setDoneClicked(boolean doneClicked) {
         isDoneClicked = doneClicked;
         notifyDataSetChanged();
+    }
+
+    public boolean isDoneClicked() {
+        return isDoneClicked;
     }
 
     public void setList(List<MyCartModel> newList) {

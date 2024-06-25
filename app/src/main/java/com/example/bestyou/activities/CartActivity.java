@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import android.content.SharedPreferences;
 
 public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnItemCheckedChangeListener {
 
@@ -51,6 +52,55 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
     FirebaseFirestore fireStore;
     Button doneButton, deleteButton;
     private String dayPlanned, name, bodyPart, sets, reps;
+    private static final String PREFS_NAME = "CartPrefs";
+    private static final String IS_DONE_CLICKED_KEY = "isDoneClicked";
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveCheckedStates();
+        saveDoneClickedState();
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        restoreCheckedStates();
+        restoreDoneClickedState();
+    }
+
+    private void saveCheckedStates() {
+        SharedPreferences sharedPreferences = getSharedPreferences("CartPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        for (MyCartModel item : myCartModelList) {
+            editor.putBoolean(item.getDocumentId(), item.isChecked());
+        }
+
+        editor.apply();
+    }
+
+    private void restoreCheckedStates() {
+        SharedPreferences sharedPreferences = getSharedPreferences("CartPrefs", MODE_PRIVATE);
+
+        for (MyCartModel item : myCartModelList) {
+            item.setChecked(sharedPreferences.getBoolean(item.getDocumentId(), false));
+        }
+
+        myCartAdapter.notifyDataSetChanged();
+    }
+
+    private void saveDoneClickedState() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(IS_DONE_CLICKED_KEY, myCartAdapter.isDoneClicked());
+        editor.apply();
+    }
+
+    private void restoreDoneClickedState() {
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean isDoneClicked = sharedPreferences.getBoolean(IS_DONE_CLICKED_KEY, false);
+        myCartAdapter.setDoneClicked(isDoneClicked);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +134,8 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
         recyclerView.setAdapter(myCartAdapter);
 
         final List<MyCartModel> allItems = new ArrayList<>();
+
+        restoreCheckedStates();
 
 
         if (dayPlanned == null || dayPlanned.isEmpty()) {
@@ -136,14 +188,69 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
                 workoutData.put("timestamp", currentDateandTime);
 
                 fireStore.collection("WorkoutDone").document(auth.getCurrentUser().getUid())
+                        .collection("User")
+                        .whereEqualTo("img_url", cartItem.getImg_url())
+                        .whereEqualTo("workoutName", cartItem.getWorkoutName())
+                        .whereEqualTo("bodyPart", cartItem.getBodyPart())
+                        .whereEqualTo("numberOfReps", cartItem.getNumberOfReps())
+                        .whereEqualTo("numberOfSets", cartItem.getNumberOfSets())
+                        .get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    if (task.getResult().isEmpty()) {
+                                        // Item does not exist, add it to the collection
+                                        fireStore.collection("WorkoutDone").document(auth.getCurrentUser().getUid())
+                                                .collection("User").add(workoutData).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Toast.makeText(CartActivity.this, "Workout Done!", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    }
+                                                });
+                                    } else {
+                                        // Item already exists, show a message or handle accordingly
+                                        /*Toast.makeText(CartActivity.this, "Workout already marked as done!", Toast.LENGTH_SHORT).show();*/
+                                    }
+                                } else {
+                                    /*Toast.makeText(CartActivity.this, "Failed to check workout status", Toast.LENGTH_SHORT).show();*/
+                                }
+                            }
+                        });
+
+                /*fireStore.collection("WorkoutDone").document(auth.getCurrentUser().getUid())
                         .collection("User").add(workoutData).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentReference> task) {
                                 Toast.makeText(CartActivity.this, "Workout Done!", Toast.LENGTH_SHORT).show();
                             }
-                        });
+                        });*/
             }
         }
+    }
+    public void removeFromWorkoutComplete(MyCartModel cartItem) {
+        fireStore.collection("WorkoutDone").document(auth.getCurrentUser().getUid())
+                .collection("User")
+                .whereEqualTo("img_url", cartItem.getImg_url())
+                .whereEqualTo("workoutName", cartItem.getWorkoutName())
+                .whereEqualTo("bodyPart", cartItem.getBodyPart())
+                .whereEqualTo("numberOfReps", cartItem.getNumberOfReps())
+                .whereEqualTo("numberOfSets", cartItem.getNumberOfSets())
+                .get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
+                        for (DocumentSnapshot document : task.getResult().getDocuments()) {
+                            document.getReference().delete().addOnCompleteListener(deleteTask -> {
+                                if (deleteTask.isSuccessful()) {
+                                    Toast.makeText(CartActivity.this, "Workout unmarked as done", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(CartActivity.this, "Failed to unmark workout as done", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                });
     }
 
     private void loadDataForWeek(final List<MyCartModel> allItems) {
@@ -190,6 +297,7 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
                                 }
                                 myCartModelList.add(myCartModel);
                             }
+                            restoreCheckedStates();
 
                             myCartAdapter.notifyDataSetChanged();
                         }
