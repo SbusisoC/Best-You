@@ -98,13 +98,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/bell_icon" />
+                    app:srcCompat="@drawable/message_icon" />
 
                 <TextView
                     android:id="@+id/textView12"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Notifications"
+                    android:text="Messages"
                     android:textAlignment="center"
                     android:textColor="#676767"
                     android:textSize="11sp" />
