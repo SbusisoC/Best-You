@@ -1,6 +1,7 @@
 package com.example.bestyou.adapters;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,8 +34,9 @@ public class WorkoutPlansAdapter extends RecyclerView.Adapter<WorkoutPlansAdapte
 
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Glide.with(context).load(list.get(position).getImg_url()).into(holder.catImg2);
+        /*Glide.with(context).load(list.get(position).getImg_url()).into(holder.catImg2);*/
         holder.catName2.setText(list.get(position).getName());
+
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +62,7 @@ public class WorkoutPlansAdapter extends RecyclerView.Adapter<WorkoutPlansAdapte
             super(itemView);
             catImg2 = itemView.findViewById(R.id.cat_img2);
             catName2 = itemView.findViewById(R.id.cat_name2);
+
         }
     }
 

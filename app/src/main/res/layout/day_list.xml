@@ -5,7 +5,7 @@
     android:layout_height="60dp"
     android:layout_margin="5dp"
     android:elevation="15dp"
-    app:cardCornerRadius="5dp">
+    app:cardCornerRadius="10dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,8 +14,9 @@
 
         <ImageView
             android:id="@+id/cat_img2"
-            android:layout_width="179dp"
-            android:layout_height="147dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/frame"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

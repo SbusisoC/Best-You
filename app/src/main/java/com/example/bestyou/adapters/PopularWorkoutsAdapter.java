@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.bestyou.R;
+import com.example.bestyou.activities.DetailedActivity;
 import com.example.bestyou.models.PopularWorkoutsModel;
 
 import java.util.List;
@@ -40,14 +41,14 @@ public class PopularWorkoutsAdapter extends RecyclerView.Adapter<PopularWorkouts
         holder.name.setText(popularWorkoutsModelList.get(position).getName());
         holder.part.setText(String.valueOf(popularWorkoutsModelList.get(position).getBodyPart()));
 
-     /*   holder.itemView.setOnClickListener(new View.OnClickListener() {
+      holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, DetailedActivity.class);
                 intent.putExtra("detailed",popularWorkoutsModelList.get(position));
                 context.startActivity(intent);
             }
-        });*/
+        });
     }
 
     @Override

@@ -42,7 +42,7 @@
             android:name=".activities.ShowAllWorkoutsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.fragments.HomeFragment"
+            android:name=".fragments.HomeFragment"
             android:exported="false" />
         <activity
             android:name=".activities.LoginActivity"

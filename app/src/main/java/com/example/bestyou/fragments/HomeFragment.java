@@ -1,10 +1,12 @@
 package com.example.bestyou.fragments;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +29,8 @@ import com.example.bestyou.models.CategoryModel;
 import com.example.bestyou.models.MyCartModel;
 import com.example.bestyou.models.PopularWorkoutsModel;
 import com.example.bestyou.models.WorkoutPlansModel;
+import com.example.bestyou.utils.AndroidUtil;
+import com.example.bestyou.utils.FirebaseUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -46,7 +50,6 @@ public class HomeFragment extends Fragment {
     CategoryAdapter categoryAdapter;
     List<CategoryModel> categoryModelList;
 
-
     WorkoutPlansAdapter workoutPlansAdapter;
     List<WorkoutPlansModel> workoutPlansModelList;
 
@@ -54,6 +57,8 @@ public class HomeFragment extends Fragment {
     List<PopularWorkoutsModel> popularWorkoutsModelList;
 
     FirebaseFirestore db;
+    ImageView profileImage;
+    ImageView catImg2;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -70,25 +75,35 @@ public class HomeFragment extends Fragment {
         workoutPlansRecyclerview = root.findViewById(R.id.new_product_rec);
         popularWorkoutRecyclerview = root.findViewById(R.id.popular_rec);
 
-        catShowAll = root.findViewById(R.id.category_see_all);
+        /*catShowAll = root.findViewById(R.id.category_see_all);*/
         popularWorkoutsShowAll = root.findViewById(R.id.popular_see_all);
-        workoutPlanShowAll = root.findViewById(R.id.newProducts_see_all);
+        /*workoutPlanShowAll = root.findViewById(R.id.newProducts_see_all);*/
 
-        catShowAll.setOnClickListener(new View.OnClickListener() {
+        profileImage = root.findViewById(R.id.profilePicHome);
+
+        FirebaseUtil.getCurrentProfilePicStorageRef().getDownloadUrl()
+                .addOnCompleteListener(task -> {
+                    if(task.isSuccessful()){
+                        Uri uri = task.getResult();
+                        AndroidUtil.setProfilePic(getActivity(),uri,profileImage);
+                    }
+                });
+
+        /*catShowAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), ShowAllWorkoutsActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
 
-        workoutPlanShowAll.setOnClickListener(new View.OnClickListener() {
+        /*workoutPlanShowAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(), CartActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
         popularWorkoutsShowAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

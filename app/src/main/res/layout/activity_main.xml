@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:layout_gravity="bottom"
-        android:backgroundTint="#f6f6f6"
+        android:backgroundTint="#D9000000"
         app:fabCradleMargin="8dp"
         app:fabCradleRoundedCornerRadius="40dp"
         app:fabCradleVerticalOffset="6dp"
@@ -47,7 +47,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/home_icon" />
+                    app:srcCompat="@drawable/white_home_icon" />
 
                 <TextView
                     android:id="@+id/homeText"
@@ -55,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:text="Home"
                     android:textAlignment="center"
-                    android:textColor="#676767"
+                    android:textColor="@color/white"
                     android:textSize="11sp" />
 
             </LinearLayout>
@@ -72,7 +72,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/stats_icon" />
+                    app:srcCompat="@drawable/white_stats_icon" />
 
                 <TextView
                     android:id="@+id/profileText"
@@ -80,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:text="Progress"
                     android:textAlignment="center"
-                    android:textColor="#676767"
+                    android:textColor="@color/white"
                     android:textSize="11sp" />
 
             </LinearLayout>
@@ -98,7 +98,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/message_icon" />
+                    app:srcCompat="@drawable/white_message_icon" />
 
                 <TextView
                     android:id="@+id/textView12"
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:text="Messages"
                     android:textAlignment="center"
-                    android:textColor="#676767"
+                    android:textColor="@color/white"
                     android:textSize="11sp" />
 
             </LinearLayout>
@@ -123,7 +123,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_weight="1"
-                    app:srcCompat="@drawable/profile_icon" />
+                    app:srcCompat="@drawable/white_profile_icon" />
 
                 <TextView
                     android:id="@+id/supportText"
@@ -131,7 +131,7 @@
                     android:layout_height="wrap_content"
                     android:text="Profile"
                     android:textAlignment="center"
-                    android:textColor="#676767"
+                    android:textColor="@color/white"
                     android:textSize="11sp" />
 
             </LinearLayout>
