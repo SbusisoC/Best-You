@@ -3,8 +3,11 @@ package com.example.bestyou.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 
 import androidx.appcompat.widget.Toolbar;
@@ -38,6 +41,20 @@ public class MessagesActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.notifications_toolbar);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
+        // Set the back arrow color to white
+        if (toolbar.getNavigationIcon() != null) {
+            toolbar.getNavigationIcon().setColorFilter(getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
+        }
+
+        // status bar color to black
+        Window window = this.getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(getResources().getColor(R.color.uiGrey));
+
+        // navigation bar color to black
+        window.setNavigationBarColor(getResources().getColor(R.color.uiGrey));
 
         toolbar.setNavigationOnClickListener(view -> finish());
 

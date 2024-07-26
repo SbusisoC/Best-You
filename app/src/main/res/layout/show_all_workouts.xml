@@ -11,7 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="#EDEDED"
+        android:background="@drawable/frame2"
         android:elevation="15dp">
 
         <ImageView
@@ -34,6 +34,7 @@
             android:text="Workout Name"
             android:textSize="12sp"
             android:textStyle="bold"
+            android:textColor="@color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_image" />
@@ -62,7 +63,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="type"
-                android:textColor="@color/black"
+                android:textColor="@color/textGrey"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/dollar"

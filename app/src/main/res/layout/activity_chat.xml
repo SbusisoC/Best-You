@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/uiGreyChats2"
         android:padding="10dp"
         android:id="@+id/toolbar">
 
@@ -19,7 +19,7 @@
             android:layout_height="36dp"
             android:src="@drawable/back_icon"
             android:background="?attr/selectableItemBackgroundBorderless"
-            app:tint="@color/black"
+            app:tint="@color/white"
             android:layout_centerVertical="true"
             android:id="@+id/back_btn"/>
 
@@ -40,7 +40,7 @@
             android:layout_marginTop="7dp"
             android:layout_toRightOf="@id/profile_pic_layout"
             android:text="Username"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="bold" />
 
@@ -52,12 +52,14 @@
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar"
         android:layout_above="@id/bottom_layout"
+        android:background="@drawable/background"
         android:id="@+id/chat_recycler_view"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"
+        android:background="@color/uiGreyChats"
         android:padding="8dp"
         android:id="@+id/bottom_layout">
 
@@ -79,17 +81,16 @@
             android:padding="10dp" />
 
         <ImageButton
+            android:id="@+id/message_send_btn"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:src="@drawable/send_icon"
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            app:tint="@color/black"
-            android:id="@+id/message_send_btn"
-            android:padding="8dp"
             android:layout_marginStart="10dp"
-            />
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="8dp"
+            android:src="@drawable/send_icon"
+            app:tint="@color/white" />
 
     </RelativeLayout>
 

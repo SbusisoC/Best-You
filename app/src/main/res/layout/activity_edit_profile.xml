@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:layout_gravity="center"
+    android:background="@color/black"
     tools:context=".activities.EditProfileActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -17,7 +18,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="Edit Profile" />
+        app:title="Edit Profile"
+        app:titleTextColor="@color/white"/>
+
 
     <ImageView
         android:id="@+id/profilePic"
@@ -34,66 +37,76 @@
 
     <EditText
         android:id="@+id/profile_username"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:padding="8dp"
         android:hint="Username"
         android:inputType="text"
         android:textSize="22dp"
+        android:textColorHint="@color/textGrey"
         android:layout_margin="10dp"
-        android:background="@drawable/edit_text_rounded_corner"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/text_bg2"
         android:elevation="5dp" />
 
     <EditText
         android:id="@+id/Current_weight"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:padding="8dp"
         android:hint="Current Weight"
         android:inputType="text"
         android:textSize="22dp"
+        android:textColorHint="@color/textGrey"
         android:layout_margin="10dp"
-        android:background="@drawable/edit_text_rounded_corner"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/text_bg2"
         android:elevation="5dp" />
 
     <EditText
         android:id="@+id/target_weight"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:padding="8dp"
         android:hint="Target Weight"
         android:inputType="text"
         android:textSize="22dp"
         android:layout_margin="10dp"
-        android:background="@drawable/edit_text_rounded_corner"
+        android:layout_gravity="center_horizontal"
+        android:textColorHint="@color/textGrey"
+        android:background="@drawable/text_bg2"
         android:elevation="5dp" />
 
     <EditText
         android:id="@+id/Initial_weight"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:padding="8dp"
         android:hint="Initial Weight"
         android:inputType="text"
         android:textSize="22dp"
         android:layout_margin="10dp"
-        android:background="@drawable/edit_text_rounded_corner"
+        android:layout_gravity="center_horizontal"
+        android:textColorHint="@color/textGrey"
+        android:background="@drawable/text_bg2"
         android:elevation="5dp" />
 
     <EditText
         android:id="@+id/age"
-        android:layout_width="match_parent"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:padding="10dp"
+        android:padding="8dp"
         android:hint="Age"
         android:inputType="text"
         android:textSize="22dp"
         android:layout_margin="10dp"
-        android:background="@drawable/edit_text_rounded_corner"
+        android:background="@drawable/text_bg2"
+        android:textColorHint="@color/textGrey"
+        android:layout_gravity="center_horizontal"
         android:elevation="5dp" />
 
     <LinearLayout
-        android:layout_width="200dp"
+        android:layout_width="150dp"
         android:layout_height="100dp"
         android:gravity="center_vertical"
         android:layout_marginTop="30dp"
@@ -104,13 +117,13 @@
             android:id="@+id/profle_update_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/btn_rounded_corner"
+            android:backgroundTint="@color/darkGrey"
             android:text="Update profile" />
 
         <ProgressBar
             android:layout_width="32dp"
             android:layout_height="wrap_content"
-            android:indeterminateTint="@color/black"
+            android:indeterminateTint="@color/white"
             android:layout_gravity="center"
             android:id="@+id/profile_progress_bar"/>
 
