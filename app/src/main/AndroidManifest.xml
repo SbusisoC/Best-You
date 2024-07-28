@@ -37,6 +37,7 @@
             android:exported="false" />
         <activity
             android:name=".activities.DetailedActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".activities.ShowAllWorkoutsActivity"

@@ -3,19 +3,26 @@ package com.example.bestyou.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.bestyou.R;
 /*import com.example.bestyou.models.NewProductsModel;*/
+import com.example.bestyou.adapters.SetEntryAdapter;
 import com.example.bestyou.models.PopularWorkoutsModel;
 import com.example.bestyou.models.ShowAllWorkoutsModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -52,6 +59,9 @@ public class DetailedActivity extends AppCompatActivity {
     private int currentDayIndex = 0;
     private String[] daysOfWeek = {"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"};
     private EditText sets, reps;
+    private Spinner weightSpinner;
+    private RecyclerView recyclerView;
+    private SetEntryAdapter setEntryAdapter;
 
 
     @Override
@@ -92,8 +102,14 @@ public class DetailedActivity extends AppCompatActivity {
         rightArrow = findViewById(R.id.rightArrow);
         addToPlan = findViewById(R.id.add_to_plan);
 
-        sets = findViewById(R.id.editTextReps);
-        reps = findViewById(R.id.editTextSets);
+        // Initialize RecyclerView and Adapter
+        recyclerView = findViewById(R.id.recylerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        setEntryAdapter = new SetEntryAdapter(0); // Initially 0 sets
+        recyclerView.setAdapter(setEntryAdapter);
+
+        sets = findViewById(R.id.editTextSets);
+        reps = findViewById(R.id.editTextReps);
 
         if (popularWorkoutsModel != null) {
             Glide.with(getApplicationContext()).load(popularWorkoutsModel.getImg_url()).into(detailedImg);
@@ -108,6 +124,26 @@ public class DetailedActivity extends AppCompatActivity {
             bodyPart.setText(showAllWorkoutsModel.getBodyPart());
 
         }
+
+        sets.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // No action needed here
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // No action needed here
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!s.toString().isEmpty()) {
+                    int numberOfSets = Integer.parseInt(s.toString());
+                    setEntryAdapter.updateData(numberOfSets);
+                }
+            }
+        });
 
         addToPlan.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,19 +166,23 @@ public class DetailedActivity extends AppCompatActivity {
                 updateDay();
             }
         });
+
     }
 
       private void addtoPlan() {
 
         String saveCurrentTime, saveCurrentDate;
         Calendar calForDate = Calendar.getInstance();
-        SimpleDateFormat currentDate = new SimpleDateFormat("MM, dd, yyyy");
+        SimpleDateFormat currentDate = new SimpleDateFormat("dd, MM, yyyy");
         saveCurrentDate = currentDate.format(calForDate.getTime());
 
         SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
         saveCurrentTime = currentTime.format(calForDate.getTime());
 
         final HashMap<String, Object> cartMap = new HashMap<>();
+
+        int numberOfReps = Integer.parseInt(reps.getText().toString());
+
 
         // Check which model is not null and get the image URL accordingly
         String imageUrl = "";
@@ -165,6 +205,20 @@ public class DetailedActivity extends AppCompatActivity {
         cartMap.put("numberOfSets", sets.getText().toString());
         cartMap.put("numberOfReps", reps.getText().toString());
         cartMap.put("dayPlanned", dayTextView.getText().toString());
+
+          // Collecting the sets data
+          int numberOfSets = Integer.parseInt(sets.getText().toString());
+          for (int i = 0; i < numberOfSets; i++) {
+              View view = recyclerView.getLayoutManager().findViewByPosition(i);
+              if (view != null) {
+                  EditText repsEditText = view.findViewById(R.id.editTextReps);
+                  EditText weightEditText = view.findViewById(R.id.weightEntry);
+                  String reps = repsEditText.getText().toString();
+                  String weight = weightEditText.getText().toString();
+                  cartMap.put("set_" + (i + 1) + "_reps", reps);
+                  cartMap.put("set_" + (i + 1) + "_weight", weight);
+              }
+          }
 
         fireStore.collection("AddToCart").document(auth.getCurrentUser().getUid())
                 .collection("User").add(cartMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
