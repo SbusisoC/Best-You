@@ -6,17 +6,23 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -38,17 +44,9 @@ import java.util.HashMap;
 public class DetailedActivity extends AppCompatActivity {
 
     ImageView detailedImg, leftArrow, rightArrow;
-    TextView name, bodyPart, dayTextView;
+    TextView name, bodyPart, dayTextView, textTime, Time;
     Button addToPlan;
-    /*ImageView addItems, removeItems;*/
-
     Toolbar toolbar;
-
-    /*int totalQuantity = 1;
-    int totalPrice = 0;*/
-
-    //New Products
-    /*NewProductsModel newProductsModel = null;*/
 
     //Show All
     ShowAllWorkoutsModel showAllWorkoutsModel = null;
@@ -62,7 +60,7 @@ public class DetailedActivity extends AppCompatActivity {
     private Spinner weightSpinner;
     private RecyclerView recyclerView;
     private SetEntryAdapter setEntryAdapter;
-
+    private String selectedTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,49 +79,79 @@ public class DetailedActivity extends AppCompatActivity {
         });
 
         fireStore = FirebaseFirestore.getInstance();
-
         auth = FirebaseAuth.getInstance();
 
+        // Initialize Views
+        textTime = findViewById(R.id.textTime);
+        Time = findViewById(R.id.Time);
+        recyclerView = findViewById(R.id.recylerView);
+        detailedImg = findViewById(R.id.detailed_img);
+        name = findViewById(R.id.detailed_name);
+        bodyPart = findViewById(R.id.part);
+        dayTextView = findViewById(R.id.dayTextView);
+        leftArrow = findViewById(R.id.leftArrow);
+        rightArrow = findViewById(R.id.rightArrow);
+        addToPlan = findViewById(R.id.add_to_plan);
+        sets = findViewById(R.id.editTextSets);
+        reps = findViewById(R.id.editTextReps);
+
+        // Initialize RecyclerView and Adapter
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        setEntryAdapter = new SetEntryAdapter(0); // Initially 0 sets
+        recyclerView.setAdapter(setEntryAdapter);
+
         final Object obj = getIntent().getSerializableExtra("detailed");
-
-
         if (obj instanceof PopularWorkoutsModel) {
             popularWorkoutsModel = (PopularWorkoutsModel) obj;
         } else if (obj instanceof ShowAllWorkoutsModel) {
             showAllWorkoutsModel = (ShowAllWorkoutsModel) obj;
         }
 
-        detailedImg = findViewById(R.id.detailed_img);
-        name = findViewById(R.id.detailed_name);
-        bodyPart = findViewById(R.id.part);
+        if (showAllWorkoutsModel != null && "cardio".equalsIgnoreCase(showAllWorkoutsModel.getType())) {
+            // Hide reps, sets, and recycler view
+            findViewById(R.id.textReps).setVisibility(View.GONE);
+            findViewById(R.id.editTextReps).setVisibility(View.GONE);
+            findViewById(R.id.textSets).setVisibility(View.GONE);
+            findViewById(R.id.editTextSets).setVisibility(View.GONE);
+            recyclerView.setVisibility(View.INVISIBLE);
 
-        dayTextView = findViewById(R.id.dayTextView);
-        leftArrow = findViewById(R.id.leftArrow);
-        rightArrow = findViewById(R.id.rightArrow);
-        addToPlan = findViewById(R.id.add_to_plan);
+            // Show time-related views
+            textTime.setVisibility(View.VISIBLE);
+            Time.setVisibility(View.VISIBLE);
+        } else {
+            // Default case: Show reps, sets, and recycler view for non-cardio workouts
+            findViewById(R.id.textReps).setVisibility(View.VISIBLE);
+            findViewById(R.id.editTextReps).setVisibility(View.VISIBLE);
+            findViewById(R.id.textSets).setVisibility(View.VISIBLE);
+            findViewById(R.id.editTextSets).setVisibility(View.VISIBLE);
+            recyclerView.setVisibility(View.VISIBLE);
 
-        // Initialize RecyclerView and Adapter
-        recyclerView = findViewById(R.id.recylerView);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        setEntryAdapter = new SetEntryAdapter(0); // Initially 0 sets
-        recyclerView.setAdapter(setEntryAdapter);
-
-        sets = findViewById(R.id.editTextSets);
-        reps = findViewById(R.id.editTextReps);
+            // Hide time-related views
+            textTime.setVisibility(View.GONE);
+            Time.setVisibility(View.GONE);
+        }
 
         if (popularWorkoutsModel != null) {
-            Glide.with(getApplicationContext()).load(popularWorkoutsModel.getImg_url()).into(detailedImg);
+            Glide.with(getApplicationContext()).asGif().load(popularWorkoutsModel.getImg_url()).into(detailedImg);
             name.setText(popularWorkoutsModel.getName());
             bodyPart.setText(popularWorkoutsModel.getBodyPart());
 
         }
 
         if (showAllWorkoutsModel != null) {
+            Glide.with(getApplicationContext()).asGif().load(showAllWorkoutsModel.getImg_url()).into(detailedImg);
             Glide.with(getApplicationContext()).load(showAllWorkoutsModel.getImg_url()).into(detailedImg);
             name.setText(showAllWorkoutsModel.getName());
             bodyPart.setText(showAllWorkoutsModel.getBodyPart());
 
         }
+
+        Time.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerDialog();
+            }
+        });
 
         sets.addTextChangedListener(new TextWatcher() {
             @Override
@@ -186,10 +214,13 @@ public class DetailedActivity extends AppCompatActivity {
 
         // Check which model is not null and get the image URL accordingly
         String imageUrl = "";
+        String workoutType = "";
         if (popularWorkoutsModel != null) {
             imageUrl = popularWorkoutsModel.getImg_url();
+            workoutType = popularWorkoutsModel.getType();
         } else if (showAllWorkoutsModel != null) {
             imageUrl = showAllWorkoutsModel.getImg_url();
+            workoutType = showAllWorkoutsModel.getType();
         }
 
         cartMap.put("img_url", imageUrl);
@@ -197,14 +228,16 @@ public class DetailedActivity extends AppCompatActivity {
         cartMap.put("bodyPart", bodyPart.getText().toString());
         cartMap.put("currentTime", saveCurrentTime);
         cartMap.put("currentDate", saveCurrentDate);
-
-        //
         cartMap.put("time",System.currentTimeMillis());
-        //
-
         cartMap.put("numberOfSets", sets.getText().toString());
         cartMap.put("numberOfReps", reps.getText().toString());
         cartMap.put("dayPlanned", dayTextView.getText().toString());
+        cartMap.put("type", workoutType);
+
+          // Add the selected workout time (if it's a cardio workout)
+          if (selectedTime != null && !selectedTime.isEmpty()) {
+              cartMap.put("workoutTime", selectedTime);
+          }
 
           // Collecting the sets data
           int numberOfSets = Integer.parseInt(sets.getText().toString());
@@ -243,6 +276,48 @@ public class DetailedActivity extends AppCompatActivity {
     private void updateDay() {
 
         dayTextView.setText(daysOfWeek[currentDayIndex]);
+    }
+
+    private void showTimePickerDialog() {
+        // Create an AlertDialog
+        AlertDialog.Builder builder = new AlertDialog.Builder(DetailedActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
+
+        // Inflate the custom layout for the time picker
+        View dialogView = inflater.inflate(R.layout.dialog_time_picker, null);
+        builder.setView(dialogView);
+
+        // Initialize NumberPickers for hours, minutes, and seconds
+        final NumberPicker hoursPicker = dialogView.findViewById(R.id.hours_picker);
+        final NumberPicker minutesPicker = dialogView.findViewById(R.id.minutes_picker);
+        final NumberPicker secondsPicker = dialogView.findViewById(R.id.seconds_picker);
+
+        // Set NumberPicker ranges
+        hoursPicker.setMinValue(0);
+        hoursPicker.setMaxValue(23);
+        minutesPicker.setMinValue(0);
+        minutesPicker.setMaxValue(59);
+        secondsPicker.setMinValue(0);
+        secondsPicker.setMaxValue(59);
+
+        // Handle OK button click
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            int hours = hoursPicker.getValue();
+            int minutes = minutesPicker.getValue();
+            int seconds = secondsPicker.getValue();
+
+            // Store selected time in the format "HH:mm:ss.SSS"
+            selectedTime = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+
+            // Update the Time TextView with selected time
+            Time.setText(selectedTime);
+        });
+
+        // Handle Cancel button click
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+        // Show the dialog
+        builder.create().show();
     }
 }
 

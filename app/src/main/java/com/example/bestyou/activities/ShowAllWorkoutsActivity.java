@@ -199,5 +199,25 @@ public class ShowAllWorkoutsActivity extends AppCompatActivity {
 
         }
 
+        if (type != null && type.equalsIgnoreCase("cardio")) {
+            fireStore.collection("ShowAllWorkouts").whereEqualTo("type", "cardio")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                            if (task.isSuccessful()) {
+                                for (DocumentSnapshot doc : task.getResult().getDocuments()) {
+
+                                    ShowAllWorkoutsModel showAllWorkoutsModel = doc.toObject(ShowAllWorkoutsModel.class);
+                                    showAllWorkoutsModelList.add(showAllWorkoutsModel);
+                                    showAllWorkoutsAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
+                    });
+
+        }
+
     }
 }

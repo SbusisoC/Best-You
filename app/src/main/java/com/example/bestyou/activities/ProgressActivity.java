@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -82,6 +83,18 @@ public class ProgressActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(view -> finish());
 
         weightChart = findViewById(R.id.weightChart);
+
+        weightChart.getXAxis().setTextColor(Color.WHITE);
+
+        // Set text color for Y-axis
+        weightChart.getAxisLeft().setTextColor(Color.WHITE);
+        weightChart.getAxisRight().setTextColor(Color.WHITE);
+
+        // Set text color for legend
+        weightChart.getLegend().setTextColor(Color.WHITE);
+
+        // Set text color for descriptions
+        weightChart.getDescription().setTextColor(Color.WHITE);
         setupChart();
 
         auth = FirebaseAuth.getInstance();
@@ -100,7 +113,6 @@ public class ProgressActivity extends AppCompatActivity {
         initialWeight = findViewById(R.id.users_initial_weight);
         targetWeight = findViewById(R.id.users_target_weight);
         completedSessions = findViewById(R.id.users_completed_sessions);
-
 
         FirebaseUtil.currentUserDetails().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -235,6 +247,7 @@ public class ProgressActivity extends AppCompatActivity {
         targetWeightLine.setTextSize(8f);
 
         YAxis leftAxis = weightChart.getAxisLeft();
+        dataSet.setValueTextColor(Color.WHITE);
         leftAxis.removeAllLimitLines(); // Clear previous limit lines
         leftAxis.addLimitLine(targetWeightLine);
 

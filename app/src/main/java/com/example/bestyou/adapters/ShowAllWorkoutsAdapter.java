@@ -35,7 +35,8 @@ public class ShowAllWorkoutsAdapter extends RecyclerView.Adapter<ShowAllWorkouts
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Glide.with(context).load(list.get(position).getImg_url()).into(holder.mItemImage);
+        //assBitmap is to make the gif take only the first from so it becomes an image
+        Glide.with(context).asBitmap().load(list.get(position).getImg_url()).into(holder.mItemImage);
         holder.mBodyPart.setText(list.get(position).getBodyPart());
         holder.mName.setText(list.get(position).getName());
 

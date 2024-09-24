@@ -16,7 +16,7 @@
     <string name="logout">Logout</string>
     <string name="user_email">User email</string>
     <string name="user_name">User name</string>
-<!-- TODO: Remove or change this placeholder text -->
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="default_web_client_id">Web client id\n</string>
     <string name="user_name2">User name</string>

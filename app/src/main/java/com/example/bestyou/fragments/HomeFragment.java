@@ -113,14 +113,14 @@ public class HomeFragment extends Fragment {
         });
 
         //imageslider
-        ImageSlider imageSlider = root.findViewById(R.id.image_slider);
+       /* ImageSlider imageSlider = root.findViewById(R.id.image_slider);*/
         List<SlideModel> slideModels = new ArrayList<>();
 
-        slideModels.add(new SlideModel(R.drawable.banner1, ScaleTypes.CENTER_CROP));
+        /*slideModels.add(new SlideModel(R.drawable.banner1, ScaleTypes.CENTER_CROP));
         slideModels.add(new SlideModel(R.drawable.banner2, ScaleTypes.CENTER_CROP));
         slideModels.add(new SlideModel(R.drawable.banner3, "Takealot", ScaleTypes.CENTER_CROP));
 
-        imageSlider.setImageList(slideModels);
+        imageSlider.setImageList(slideModels);*/
 
         catRecyclerview.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.HORIZONTAL, false));
         categoryModelList = new ArrayList<>();

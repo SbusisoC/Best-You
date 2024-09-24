@@ -54,7 +54,7 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
     Toolbar toolbar;
     FirebaseFirestore fireStore;
     Button doneButton, deleteButton;
-    private String dayPlanned, name, bodyPart, sets, reps;
+    private String dayPlanned, name, bodyPart, sets, reps, time;
     private static final String PREFS_NAME = "CartPrefs";
     private static final String IS_DONE_CLICKED_KEY = "isDoneClicked";
 
@@ -141,6 +141,7 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
         bodyPart = getIntent().getStringExtra("bodyPart");
         sets = getIntent().getStringExtra("sets");
         reps = getIntent().getStringExtra("reps");
+        time = getIntent().getStringExtra("time");
 
         fireStore = FirebaseFirestore.getInstance();
         recyclerView = findViewById(R.id.show_all_rec);

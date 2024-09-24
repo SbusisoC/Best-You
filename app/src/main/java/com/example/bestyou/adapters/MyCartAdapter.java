@@ -1,6 +1,7 @@
 package com.example.bestyou.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.bestyou.R;
 import com.example.bestyou.activities.CartActivity;
+import com.example.bestyou.activities.CartDetailedActivity;
 import com.example.bestyou.models.MyCartModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -85,11 +87,37 @@ public class MyCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             CartItemViewHolder cartHolder = (CartItemViewHolder) holder;
             MyCartModel cartItem = list.get(position);
 
-            Glide.with(context).load(cartItem.getImg_url()).into(cartHolder.mItemImage);
+            Glide.with(context).asBitmap().load(cartItem.getImg_url()).into(cartHolder.mItemImage);
             cartHolder.nPart.setText(cartItem.getBodyPart());
             cartHolder.mName.setText(cartItem.getWorkoutName());
             cartHolder.Sets.setText(cartItem.getNumberOfSets());
             cartHolder.Reps.setText(cartItem.getNumberOfReps());
+            cartHolder.nTime.setText(cartItem.getWorkoutTime());
+
+            // Check the workout type
+            if ("cardio".equalsIgnoreCase(cartItem.getType())) {
+                // Hide sets and reps
+                cartHolder.Sets.setVisibility(View.INVISIBLE);
+                cartHolder.Reps.setVisibility(View.INVISIBLE);
+                cartHolder.nTextSets.setVisibility(View.INVISIBLE);
+                cartHolder.nTextReps.setVisibility(View.INVISIBLE);
+                cartHolder.nTextTime.setVisibility(View.VISIBLE);
+                cartHolder.nTime.setVisibility(View.VISIBLE);
+            } else {
+                // Show sets and reps
+                cartHolder.Sets.setVisibility(View.VISIBLE);
+                cartHolder.Reps.setVisibility(View.VISIBLE);
+                cartHolder.nTextSets.setVisibility(View.VISIBLE);
+                cartHolder.nTextReps.setVisibility(View.VISIBLE);
+                cartHolder.nTextTime.setVisibility(View.GONE);
+                cartHolder.nTime.setVisibility(View.GONE);
+            }
+
+            cartHolder.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(context, CartDetailedActivity.class);
+                intent.putExtra("detailedCart", cartItem);
+                context.startActivity(intent);
+            });
 
             if (isDoneClicked && cartItem.isChecked()) {
                 cartHolder.itemView.setAlpha(0.5f);
@@ -115,17 +143,6 @@ public class MyCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             });
         }
     }
-            /*cartHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    cartItem.setChecked(isChecked);
-                    listener.onCheckedChanged(position, isChecked);
-                }
-            });
-
-            cartHolder.checkBox.setChecked(cartItem.isChecked());
-        }
-    }*/
 
     @Override
     public int getItemCount() {
@@ -171,6 +188,8 @@ public class MyCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         private ImageView mItemImage;
         private TextView nPart;
         private TextView mName, Sets, Reps;
+        private TextView nTextSets, nTextReps;
+        private TextView nTextTime, nTime;
         private CheckBox checkBox;
 
         public CartItemViewHolder(@NonNull View itemView) {
@@ -181,6 +200,10 @@ public class MyCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             Sets = itemView.findViewById(R.id.sets);
             Reps = itemView.findViewById(R.id.reps);
             checkBox = itemView.findViewById(R.id.checkBox);
+            nTextSets = itemView.findViewById(R.id.textView4);
+            nTextReps = itemView.findViewById(R.id.textView6);
+            nTextTime = itemView.findViewById(R.id.nTextTime);
+            nTime = itemView.findViewById(R.id.nTime);
         }
     }
 

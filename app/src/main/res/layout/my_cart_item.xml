@@ -80,8 +80,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="Reps: "
+            android:text="Sets: "
             android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+        <TextView
+            android:id="@+id/nTextTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Time: "
+            android:textColor="@color/white"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
@@ -97,11 +109,22 @@
             app:layout_constraintTop_toTopOf="@+id/textView4" />
 
         <TextView
+            android:id="@+id/nTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/nTextTime"
+            app:layout_constraintStart_toEndOf="@+id/nTextTime"
+            app:layout_constraintTop_toTopOf="@+id/nTextTime" />
+
+        <TextView
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="80dp"
-            android:text="Sets: "
+            android:layout_marginStart="75dp"
+            android:text="Reps: "
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -127,6 +150,5 @@
             app:layout_constraintBottom_toBottomOf="@+id/reps"
             app:layout_constraintStart_toEndOf="@+id/reps"
             app:layout_constraintTop_toTopOf="@+id/reps" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

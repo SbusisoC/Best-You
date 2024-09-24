@@ -37,7 +37,7 @@ public class PopularWorkoutsAdapter extends RecyclerView.Adapter<PopularWorkouts
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        Glide.with(context).load(popularWorkoutsModelList.get(position).getImg_url()).into(holder.imageView);
+        Glide.with(context).asBitmap().load(popularWorkoutsModelList.get(position).getImg_url()).into(holder.imageView);
         holder.name.setText(popularWorkoutsModelList.get(position).getName());
         holder.part.setText(String.valueOf(popularWorkoutsModelList.get(position).getBodyPart()));
 

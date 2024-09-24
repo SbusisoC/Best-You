@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
@@ -83,6 +84,18 @@ public class ProfileActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(view -> finish());
 
         weightChart = findViewById(R.id.weightChart);
+
+        weightChart.getXAxis().setTextColor(Color.WHITE);
+
+        // Set text color for Y-axis
+        weightChart.getAxisLeft().setTextColor(Color.WHITE);
+        weightChart.getAxisRight().setTextColor(Color.WHITE);
+
+        // Set text color for legend
+        weightChart.getLegend().setTextColor(Color.WHITE);
+
+        // Set text color for descriptions
+        weightChart.getDescription().setTextColor(Color.WHITE);
         setupChart();
 
         auth = FirebaseAuth.getInstance();
@@ -226,6 +239,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         LineDataSet dataSet = new LineDataSet(entries, "My Weight Progress Time");
         dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+        dataSet.setValueTextColor(Color.WHITE);
         LineData lineData = new LineData(dataSet);
 
         weightChart.setData(lineData);
