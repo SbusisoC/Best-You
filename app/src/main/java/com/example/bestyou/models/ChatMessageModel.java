@@ -2,6 +2,8 @@ package com.example.bestyou.models;
 
 import com.google.firebase.Timestamp;
 
+import java.text.SimpleDateFormat;
+
 public class ChatMessageModel {
     private String message;
     private String senderId;
@@ -38,5 +40,10 @@ public class ChatMessageModel {
 
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public boolean isSameDay(ChatMessageModel other) {
+        SimpleDateFormat fmt = new SimpleDateFormat("dd MM, yyyy");
+        return fmt.format(this.timestamp.toDate()).equals(fmt.format(other.timestamp.toDate()));
     }
 }

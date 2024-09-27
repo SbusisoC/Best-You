@@ -83,14 +83,47 @@ public class ChatActivity extends AppCompatActivity {
 
     void setupChatRecyclerView(){
         Query query = FirebaseUtil.getChatroomMessageReference(chatroomId)
-                .orderBy("timestamp", Query.Direction.DESCENDING);
+                .orderBy("timestamp", Query.Direction.ASCENDING);
+
+        FirestoreRecyclerOptions<ChatMessageModel> options = new FirestoreRecyclerOptions.Builder<ChatMessageModel>()
+                .setQuery(query, ChatMessageModel.class).build();
+
+        adapter = new ChatRecyclerAdapter(options, getApplicationContext());
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setAdapter(adapter);
+
+        adapter.startListening();
+
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+
+                // Automatically scroll to the last message when new messages are inserted
+                int totalItemCount = adapter.getItemCount();
+                recyclerView.scrollToPosition(totalItemCount - 1);
+            }
+        });
+
+        // Ensure that when the chat is first opened, it scrolls to the last message
+        recyclerView.post(() -> {
+            if (adapter.getItemCount() > 0) {
+                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+            }
+        });
+    }
+
+    /*void setupChatRecyclerView(){
+        Query query = FirebaseUtil.getChatroomMessageReference(chatroomId)
+                .orderBy("timestamp", Query.Direction.ASCENDING);
 
         FirestoreRecyclerOptions<ChatMessageModel> options = new FirestoreRecyclerOptions.Builder<ChatMessageModel>()
                 .setQuery(query,ChatMessageModel.class).build();
 
         adapter = new ChatRecyclerAdapter(options,getApplicationContext());
         LinearLayoutManager manager = new LinearLayoutManager(this);
-        manager.setReverseLayout(true);
+        manager.setReverseLayout(false);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
         adapter.startListening();
@@ -101,7 +134,7 @@ public class ChatActivity extends AppCompatActivity {
                 recyclerView.smoothScrollToPosition(0);
             }
         });
-    }
+    }*/
     void sendMessageToUser(String message){
 
         chatroomModel.setLastMessageTimestamp(Timestamp.now());

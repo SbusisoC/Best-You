@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
@@ -61,6 +63,7 @@ public class DetailedActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private SetEntryAdapter setEntryAdapter;
     private String selectedTime;
+    private Calendar selectedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,30 +185,33 @@ public class DetailedActivity extends AppCompatActivity {
         leftArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                decrementDay();
-                updateDay();
+                showDatePickerDialog();
+                /*decrementDay();
+                updateDay();*/
             }
         });
 
         rightArrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                incrementDay();
-                updateDay();
+                showDatePickerDialog();
+                /*incrementDay();
+                updateDay();*/
             }
         });
 
     }
 
       private void addtoPlan() {
+          String saveCurrentTime;
+          Calendar calForDate = Calendar.getInstance();
 
-        String saveCurrentTime, saveCurrentDate;
-        Calendar calForDate = Calendar.getInstance();
-        SimpleDateFormat currentDate = new SimpleDateFormat("dd, MM, yyyy");
-        saveCurrentDate = currentDate.format(calForDate.getTime());
+          // Use selectedDate from date picker if it is set, otherwise use current date
+          SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
+          String saveCurrentDate = (selectedDate != null) ? dateFormat.format(selectedDate.getTime()) : dateFormat.format(calForDate.getTime());
 
-        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
-        saveCurrentTime = currentTime.format(calForDate.getTime());
+          SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+          saveCurrentTime = currentTime.format(calForDate.getTime());
 
         final HashMap<String, Object> cartMap = new HashMap<>();
 
@@ -318,6 +324,34 @@ public class DetailedActivity extends AppCompatActivity {
 
         // Show the dialog
         builder.create().show();
+    }
+    private void showDatePickerDialog() {
+        // Get the current date
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        // Create a DatePickerDialog
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int selectedYear, int selectedMonth, int selectedDay) {
+                        // Update the TextView with the selected date
+                        selectedDate = Calendar.getInstance();
+                        selectedDate.set(selectedYear, selectedMonth, selectedDay);
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("EEE"); // Format the date to display the day of the week
+                        String dayOfWeek = sdf.format(selectedDate.getTime());
+                        dayTextView.setText(dayOfWeek); // Update the dayTextView with the selected day
+                    }
+                },
+                year, month, day
+        );
+
+        // Show the DatePickerDialog
+        datePickerDialog.show();
     }
 }
 
