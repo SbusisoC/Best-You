@@ -294,7 +294,7 @@
                         android:layout_marginStart="10dp"
                         android:layout_marginTop="2dp"
                         android:gravity="center|center_horizontal"
-                        android:text="92"
+                        android:text="0"
                         android:textColor="@color/white"
                         android:textSize="26sp"
                         android:textStyle="bold" />
@@ -307,7 +307,7 @@
 
     </LinearLayout>
 
-    <com.github.mikephil.charting.charts.LineChart
+    <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/weightChart"
         android:layout_width="match_parent"
         android:layout_height="250dp"

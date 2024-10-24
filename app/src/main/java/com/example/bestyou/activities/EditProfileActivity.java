@@ -1,11 +1,14 @@
 package com.example.bestyou.activities;
 
+import static android.graphics.Color.WHITE;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -90,6 +93,12 @@ public class EditProfileActivity extends AppCompatActivity {
         weightInput = findViewById(R.id.Current_weight);
         userAgeInput = findViewById(R.id.age);
         userTargetWeightInput = findViewById(R.id.target_weight);
+
+        usernameInput.setTextColor(ContextCompat.getColor(this, R.color.textGrey));
+        weightInput.setTextColor(ContextCompat.getColor(this, R.color.textGrey));
+        userAgeInput.setTextColor(ContextCompat.getColor(this, R.color.textGrey));
+        userTargetWeightInput.setTextColor(ContextCompat.getColor(this, R.color.textGrey));
+        initialWeightInput.setTextColor(ContextCompat.getColor(this, R.color.textGrey));
 
         getUserData();
 
@@ -183,17 +192,6 @@ public class EditProfileActivity extends AppCompatActivity {
                     }
                 });
     }
-    /*void getUserData (){
-        FirebaseUtil.currentUserDetails().get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                currentUserModel = task.getResult().toObject(UserModel.class);
-                usernameInput.setText(currentUserModel.getUsername());
-                weightInput.setText(currentUserModel.getWeight());
-
-            }
-        });
-    }*/
     void getUserData() {
         setInProgress(true);
 

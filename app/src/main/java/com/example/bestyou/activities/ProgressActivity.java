@@ -23,14 +23,19 @@ import com.example.bestyou.R;
 import com.example.bestyou.models.UserModel;
 import com.example.bestyou.utils.AndroidUtil;
 import com.example.bestyou.utils.FirebaseUtil;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.Timestamp;
@@ -54,8 +59,8 @@ public class ProgressActivity extends AppCompatActivity {
     TextView username, currentWeight, initialWeight, targetWeight, completedSessions;
     UserModel currentUserModel;
     CardView currentWeightCard, initialWeightCard;
-    private LineChart weightChart;
-
+    /*private LineChart weightChart;*/
+    private BarChart weightChart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,15 +90,11 @@ public class ProgressActivity extends AppCompatActivity {
         weightChart = findViewById(R.id.weightChart);
 
         weightChart.getXAxis().setTextColor(Color.WHITE);
-
-        // Set text color for Y-axis
         weightChart.getAxisLeft().setTextColor(Color.WHITE);
         weightChart.getAxisRight().setTextColor(Color.WHITE);
 
         // Set text color for legend
         weightChart.getLegend().setTextColor(Color.WHITE);
-
-        // Set text color for descriptions
         weightChart.getDescription().setTextColor(Color.WHITE);
         setupChart();
 
@@ -101,7 +102,7 @@ public class ProgressActivity extends AppCompatActivity {
         FirebaseUser currentUser = auth.getCurrentUser(); //getting the authorized user
 
         //error handling if user is not found, to login the user again
-        if(currentUser == null){
+        if (currentUser == null) {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();
@@ -126,11 +127,10 @@ public class ProgressActivity extends AppCompatActivity {
                         targetWeight.setText(currentUserModel.getTargetWeight());
 
                         // Update the chart with weight history
-                        /*updateChart(currentUserModel.getWeightHistory());*/
-                        updateChart(currentUserModel.getWeightHistoryAsMap(), currentUserModel.getInitialWeight(), currentUserModel.getTargetWeight());
+                        updateChart(currentUserModel.getWeightHistoryAsMap(), currentUserModel.getTargetWeight(), currentUserModel.getInitialWeight());
 
                         // Fetch and display the session count
-                        fetchSessionCount();
+                        fetchSessionCountFromFirebase();
                     }
                 }
             }
@@ -138,12 +138,11 @@ public class ProgressActivity extends AppCompatActivity {
 
         FirebaseUtil.getCurrentProfilePicStorageRef().getDownloadUrl()
                 .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        Uri uri  = task.getResult();
-                        AndroidUtil.setProfilePic(this,uri,profilePic);
+                    if (task.isSuccessful()) {
+                        Uri uri = task.getResult();
+                        AndroidUtil.setProfilePic(this, uri, profilePic);
                     }
                 });
-
 
         currentWeightCard = findViewById(R.id.current_weight);
         initialWeightCard = findViewById(R.id.initial_weight);
@@ -164,14 +163,16 @@ public class ProgressActivity extends AppCompatActivity {
 
     }
 
-    private void fetchSessionCount() {
-        String userId = Objects.requireNonNull(auth.getCurrentUser()).getUid();
+    //getting number of sessions
+    private void fetchSessionCountFromFirebase() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseFirestore.getInstance().collection("Users")
                 .document(userId)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        Long sessionCount = task.getResult().getLong("sessionCount");
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        Long sessionCount = document.getLong("sessionCount");
                         if (sessionCount != null) {
                             completedSessions.setText(String.valueOf(sessionCount));
                         } else {
@@ -182,75 +183,67 @@ public class ProgressActivity extends AppCompatActivity {
                     }
                 });
     }
-    private void setupChart() {
-        weightChart.getDescription().setEnabled(false);
-        weightChart.setTouchEnabled(true);
-        weightChart.setDragEnabled(true);
-        weightChart.setScaleEnabled(true);
-        weightChart.setDrawGridBackground(false);
-        weightChart.setPinchZoom(true);
 
-        XAxis xAxis = weightChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
-        xAxis.setGranularity(1f);
-        xAxis.setGranularityEnabled(true);  // Ensure granularity is enabled
-        xAxis.setValueFormatter(new ValueFormatter() {
-            private final SimpleDateFormat mFormat = new SimpleDateFormat("MM/dd/yy");
+    private void updateChart(List<Map<String, Object>> weightHistory, String targetWeight, String initialWeight) {
+        ArrayList<BarEntry> barEntries = new ArrayList<>();
+        int index = 0;
 
-            @Override
-            public String getFormattedValue(float value) {
-                return mFormat.format(new Date((long) value));
-            }
-        });
-
-        YAxis leftAxis = weightChart.getAxisLeft();
-        leftAxis.setDrawGridLines(false);
-        weightChart.getAxisRight().setEnabled(false);
-    }
-
-    private void updateChart(List<Map<String, Object>> weightHistory, String initialWeight, String targetWeight) {
-        if (weightHistory == null || weightHistory.isEmpty() || initialWeight == null || targetWeight == null) {
-            // Clear existing data
-            weightChart.clear();
-            return;
-        }
-
-        List<Entry> entries = new ArrayList<>();
-
-        // Add initial weight point
-        entries.add(new Entry(0, Float.parseFloat(initialWeight)));
-
-        // Add subsequent weight update points
-        long timeOffset = 0;
         for (Map<String, Object> entry : weightHistory) {
-            Timestamp timestamp = (Timestamp) entry.get("timestamp");
-            String weight = (String) entry.get("weight");
-            if (timestamp != null && weight != null) {
-                entries.add(new Entry(timestamp.toDate().getTime() + timeOffset, Float.parseFloat(weight)));
-                timeOffset += 1000; // Add a small time offset to prevent overlapping points
+            // Retrieve weight and convert to float
+            String weightStr = (String) entry.get("weight");
+            if (weightStr != null) {
+                float weight = Float.parseFloat(weightStr);
+
+                // Add entry to barEntries
+                barEntries.add(new BarEntry(index, weight));
+                index++;
             }
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "My Weight Progress Time");
-        dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-        dataSet.setLineWidth(2f);
-        LineData lineData = new LineData(dataSet);
+        // Create BarDataSet with entries and label
+        BarDataSet barDataSet = new BarDataSet(barEntries, "Weight Progress");
+        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        barDataSet.setValueTextColor(Color.WHITE); // Text color for values
+        barDataSet.setValueTextSize(10f); // Text size for values
 
-        weightChart.setData(lineData);
+        // Set up BarData and attach to chart
+        BarData barData = new BarData(barDataSet);
+        weightChart.setFitBars(true); // Ensure the bars fit into the chart view
+        weightChart.setData(barData);
+        weightChart.getDescription().setText("Weight Progress Over Time");
+        weightChart.animateY(2000); // Animate Y-axis
 
         // Add target weight line
         float targetWeightFloat = Float.parseFloat(targetWeight);
-        LimitLine targetWeightLine = new LimitLine(targetWeightFloat, "Target Weight");
+        LimitLine targetWeightLine = new LimitLine(targetWeightFloat, "Target");
         targetWeightLine.setLineWidth(2f);
-        targetWeightLine.setLineColor(getResources().getColor(R.color.red)); // graph color
-        targetWeightLine.setTextSize(8f);
+        targetWeightLine.setLineColor(getResources().getColor(R.color.white)); // graph color
+        targetWeightLine.setTextSize(10f);
+        targetWeightLine.setTextColor(Color.WHITE);
 
+        // Add initial weight line with dotted style
+        float initialWeightFloat = Float.parseFloat(initialWeight);
+        LimitLine initialWeightLine = new LimitLine(initialWeightFloat, "Initial");
+        initialWeightLine.setLineWidth(2f);
+        initialWeightLine.setLineColor(Color.LTGRAY); // Color for initial weight
+        initialWeightLine.setTextSize(10f);
+        initialWeightLine.setTextColor(Color.LTGRAY);
+        initialWeightLine.enableDashedLine(10f, 10f, 0f); // Set dashed line style
+
+        // Get the Y-axis to add the LimitLine
         YAxis leftAxis = weightChart.getAxisLeft();
-        dataSet.setValueTextColor(Color.WHITE);
-        leftAxis.removeAllLimitLines(); // Clear previous limit lines
-        leftAxis.addLimitLine(targetWeightLine);
+        leftAxis.addLimitLine(targetWeightLine); // Add target weight line to the Y-axis
+        leftAxis.addLimitLine(initialWeightLine); // Add initial weight line
 
+        // Refresh the chart
         weightChart.invalidate();
+    }
+
+    private void setupChart() {
+        weightChart.setDrawBarShadow(false);
+        weightChart.setDrawValueAboveBar(true);
+        weightChart.setMaxVisibleValueCount(60);
+        weightChart.setPinchZoom(false);
+        weightChart.setDrawGridBackground(false);
     }
 }

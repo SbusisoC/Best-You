@@ -35,72 +35,117 @@
 
     </ImageView>
 
+    <TextView
+        android:id="@+id/textUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="User"
+        android:textSize="12sp"
+        android:textColor="#D8D8D8" />
+
     <EditText
         android:id="@+id/profile_username"
-        android:layout_width="300dp"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:hint="Username"
+        android:hint=""
         android:inputType="text"
-        android:textSize="22dp"
+        android:textSize="14dp"
         android:textColorHint="@color/textGrey"
-        android:layout_margin="10dp"
+        android:layout_margin="8dp"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/text_bg2"
+        android:background="@drawable/text_bg4"
         android:elevation="5dp" />
+
+    <TextView
+        android:id="@+id/textCurrent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Current Weight"
+        android:textSize="12sp"
+        android:textColor="#D8D8D8" />
 
     <EditText
         android:id="@+id/Current_weight"
-        android:layout_width="300dp"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:hint="Current Weight"
+        android:hint=""
         android:inputType="text"
-        android:textSize="22dp"
+        android:textSize="14dp"
         android:textColorHint="@color/textGrey"
-        android:layout_margin="10dp"
+        android:layout_margin="8dp"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/text_bg2"
+        android:background="@drawable/text_bg4"
         android:elevation="5dp" />
+
+    <TextView
+        android:id="@+id/textTarget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Target Weight"
+        android:textSize="12sp"
+        android:textColor="#D8D8D8" />
 
     <EditText
         android:id="@+id/target_weight"
-        android:layout_width="300dp"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:hint="Target Weight"
+        android:hint=""
         android:inputType="text"
-        android:textSize="22dp"
-        android:layout_margin="10dp"
+        android:textSize="14dp"
+        android:layout_margin="8dp"
         android:layout_gravity="center_horizontal"
         android:textColorHint="@color/textGrey"
-        android:background="@drawable/text_bg2"
+        android:background="@drawable/text_bg4"
         android:elevation="5dp" />
+
+    <TextView
+        android:id="@+id/textInitial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Initial Weight"
+        android:textSize="12sp"
+        android:textColor="#D8D8D8" />
 
     <EditText
         android:id="@+id/Initial_weight"
-        android:layout_width="300dp"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:hint="Initial Weight"
+        android:hint=""
         android:inputType="text"
-        android:textSize="22dp"
-        android:layout_margin="10dp"
+        android:textSize="14dp"
+        android:layout_margin="8dp"
         android:layout_gravity="center_horizontal"
         android:textColorHint="@color/textGrey"
-        android:background="@drawable/text_bg2"
+        android:background="@drawable/text_bg4"
         android:elevation="5dp" />
+
+    <TextView
+        android:id="@+id/textAge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Age"
+        android:textSize="12sp"
+        android:textColor="#D8D8D8" />
 
     <EditText
         android:id="@+id/age"
-        android:layout_width="300dp"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:padding="8dp"
-        android:hint="Age"
+        android:hint=" "
         android:inputType="text"
-        android:textSize="22dp"
-        android:layout_margin="10dp"
-        android:background="@drawable/text_bg2"
+        android:textSize="14dp"
+        android:layout_margin="8dp"
+        android:background="@drawable/text_bg4"
         android:textColorHint="@color/textGrey"
         android:layout_gravity="center_horizontal"
         android:elevation="5dp" />

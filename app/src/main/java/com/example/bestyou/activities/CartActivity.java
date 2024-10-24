@@ -193,6 +193,8 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
     private void addToWorkoutComplete() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentDateandTime = sdf.format(Calendar.getInstance().getTime());
+        String currentDate = sdf.format(Calendar.getInstance().getTime()); //date for session count
+
 
         for (MyCartModel cartItem : myCartModelList) {
             if (cartItem.isChecked()) {
@@ -203,6 +205,7 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
                 workoutData.put("numberOfReps", cartItem.getNumberOfReps());
                 workoutData.put("numberOfSets", cartItem.getNumberOfSets());
                 workoutData.put("timestamp", currentDateandTime);
+                workoutData.put("date", currentDate); // Save the date separately for checking later session count
 
                 fireStore.collection("WorkoutDone").document(auth.getCurrentUser().getUid())
                         .collection("User")
@@ -224,6 +227,7 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
                                                     public void onComplete(@NonNull Task<DocumentReference> task) {
                                                         if (task.isSuccessful()) {
                                                             Toast.makeText(CartActivity.this, "Workout Done!", Toast.LENGTH_SHORT).show();
+                                                            incrementSessionCountInFirebase();  //calling session count method that is on firebase
                                                         }
                                                     }
                                                 });
@@ -236,14 +240,6 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
                                 }
                             }
                         });
-
-                /*fireStore.collection("WorkoutDone").document(auth.getCurrentUser().getUid())
-                        .collection("User").add(workoutData).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentReference> task) {
-                                Toast.makeText(CartActivity.this, "Workout Done!", Toast.LENGTH_SHORT).show();
-                            }
-                        });*/
             }
         }
     }
@@ -320,5 +316,44 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
                         }
                     }
                 });
+    }
+
+    //sending and incrementing session count to firebase
+    private void incrementSessionCountInFirebase() {
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        FirebaseFirestore fireStore = FirebaseFirestore.getInstance();
+
+        // Get the current date
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+        DocumentReference userRef = fireStore.collection("Users").document(userId);
+
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // Get the last increment date and session count
+                    String lastIncrementDate = document.getString("lastIncrementDate");
+                    Long sessionCount = document.getLong("sessionCount");
+
+                    // Only increment if the session wasn't updated today
+                    if (!currentDate.equals(lastIncrementDate)) {
+                        if (sessionCount == null) {
+                            sessionCount = 0L; // Initialize if it's null
+                        }
+                        userRef.update("sessionCount", sessionCount + 1, "lastIncrementDate", currentDate)
+                                .addOnSuccessListener(aVoid -> Log.d("Session", "Session count incremented successfully."))
+                                .addOnFailureListener(e -> Log.e("Session", "Failed to increment session count.", e));
+                    }
+                } else {
+                    // Create the sessionCount field for new users
+                    userRef.set(new HashMap<String, Object>() {{
+                                put("sessionCount", 1);  // Start session count at 1
+                                put("lastIncrementDate", currentDate);
+                            }}).addOnSuccessListener(aVoid -> Log.d("Session", "Session count initialized for new user."))
+                            .addOnFailureListener(e -> Log.e("Session", "Failed to initialize session count.", e));
+                }
+            }
+        });
     }
 }
