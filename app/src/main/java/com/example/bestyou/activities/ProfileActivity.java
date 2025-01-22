@@ -44,6 +44,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -117,14 +118,22 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         LogoutBtn.setOnClickListener(view -> {
-            //signing out
-            FirebaseAuth.getInstance().signOut();
-            //sending user to login
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            //starting the login activity
-            startActivity(intent);
-            //finish everything in the main activity
-            finish();
+            FirebaseMessaging.getInstance().deleteToken().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        //signing out
+                        FirebaseAuth.getInstance().signOut();
+                        //sending user to login
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        //starting the login activity
+                        startActivity(intent);
+                        //finish everything in the main activity
+                        finish();
+
+                    }
+                }
+            });
 
         });
 

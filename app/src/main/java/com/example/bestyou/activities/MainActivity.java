@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -13,8 +14,10 @@ import android.widget.LinearLayout;
 
 import com.example.bestyou.R;
 import com.example.bestyou.fragments.HomeFragment;
+import com.example.bestyou.utils.FirebaseUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,6 +55,18 @@ public class MainActivity extends AppCompatActivity {
         homeFragment = new HomeFragment();
         loadFragment(homeFragment);
         bottomNavigation();
+
+        getFCMToken();
+    }
+
+    void getFCMToken(){
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+                if(task.isSuccessful()){
+                    String token = task.getResult();
+                    FirebaseUtil.currentUserDetails().update("fcmToken",token);
+
+                }
+        });
     }
 
     private void loadFragment(Fragment homeFragment) {
@@ -94,5 +109,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class));
             }
         });
+
     }
 }
