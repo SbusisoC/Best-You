@@ -1,5 +1,7 @@
 package com.example.bestyou.activities;
 
+import static com.example.bestyou.utils.AndroidUtil.checkGooglePlayServices;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -7,11 +9,20 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.credentials.Credential;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.GetCredentialException;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -29,6 +40,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,7 +50,11 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
+import java.util.UUID;
 
 @SuppressWarnings("deprecation")
 public class RegisterActivity extends AppCompatActivity {
@@ -45,6 +62,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText name, email, password;
     FirebaseAuth auth;
     ProgressBar progressBar;
+    String TAG = "LEO";
 
     SharedPreferences sharedPreferences;
     GoogleSignInClient googleSignInClient;
@@ -136,8 +154,12 @@ public class RegisterActivity extends AppCompatActivity {
         signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = googleSignInClient.getSignInIntent();
-                activityResultLauncher.launch(intent);
+                try {
+                    registerUsingGoogle(RegisterActivity.this);
+                } catch (NoSuchAlgorithmException e) {
+                    Toast.makeText(RegisterActivity.this,"Error "+e.getMessage(),Toast.LENGTH_LONG).show();
+
+                }
             }
         });
     }
@@ -211,6 +233,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    //todo implement same for register using google
     private void saveUserInFirestore(FirebaseUser user, String userName) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         UserModel userModel = new UserModel();
@@ -238,5 +261,71 @@ public class RegisterActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(intent);
         finish();
+    }
+
+
+    private void registerUsingGoogle(Context context) throws NoSuchAlgorithmException {
+        if (!checkGooglePlayServices(context)) return;
+        CredentialManager credentialManager = CredentialManager.create(context);
+        String rawNonce = UUID.randomUUID().toString();
+        byte[] bytes = rawNonce.getBytes(StandardCharsets.UTF_8);
+        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        byte[] digest = md.digest(bytes);
+        StringBuilder hashedNonce = new StringBuilder();
+        for (byte b : digest) {
+            hashedNonce.append(String.format("%02x", b));
+        }
+        GetSignInWithGoogleOption getSignInWithGoogleOption = new GetSignInWithGoogleOption.Builder(context.getString(R.string.client_id))
+                .setNonce(String.valueOf(hashedNonce))
+                .build();
+        GetCredentialRequest googleSignRequest = new GetCredentialRequest.Builder()
+                .addCredentialOption(getSignInWithGoogleOption)
+                .build();
+        CancellationSignal cancellationSignal = new CancellationSignal();
+        cancellationSignal.setOnCancelListener(() -> {
+            Log.d(TAG, "signInUsingGoogle: cancelling logging in");
+        });
+        try {
+            credentialManager.getCredentialAsync(context, googleSignRequest, cancellationSignal,Runnable::run,new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+                @Override
+                public void onResult(GetCredentialResponse getCredentialResponse) {
+                    Log.d(TAG, "onResult: on result credential manager");
+                    Credential credential = getCredentialResponse.getCredential();
+                    // GoogleIdToken credential
+                    if (credential.getType() == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                        Log.d(TAG, "onResult: inside cred type google");
+                        try {
+                            GoogleIdTokenCredential googleIdTokenCredential = GoogleIdTokenCredential
+                                    .createFrom(credential.getData());
+                            String googleIdToken = googleIdTokenCredential.getIdToken();
+                            AuthCredential authCredential = GoogleAuthProvider.getCredential(googleIdToken, null);
+                            auth.signInWithCredential(authCredential).addOnSuccessListener(authResult -> {
+                                Log.d(TAG, "onResult: sign with firebase success");
+                                successfulLoggedIn();
+                            }).addOnFailureListener(e -> {
+                                Toast.makeText(context,"Error "+e.getMessage(),Toast.LENGTH_LONG).show();
+                            });
+                        } catch (Exception e) {
+                            Toast.makeText(context,"Error "+e.getMessage(),Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Toast.makeText(context, "Sorry this way of logging in is not supported yet", Toast.LENGTH_LONG).show();
+                    }
+                }
+                @Override
+                public void onError(@NonNull GetCredentialException e) {
+                    Toast.makeText(context,"Error "+e.getMessage(),Toast.LENGTH_LONG).show();
+                }
+            });
+        } catch (Exception e) {
+            Toast.makeText(context,"Error "+e.getMessage(),Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void successfulLoggedIn() {
+        Toast.makeText(RegisterActivity.this, "Login Successful.", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
+        this.finish();
     }
 }

@@ -41,8 +41,11 @@ import java.util.List;
 import java.util.Locale;
 import android.content.SharedPreferences;
 
+import org.apache.commons.logging.LogFactory;
+
 public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnItemCheckedChangeListener {
 
+    private static final org.apache.commons.logging.Log log = LogFactory.getLog(CartActivity.class);
     RecyclerView recyclerView;
     List<MyCartModel> myCartModelList;
     MyCartAdapter myCartAdapter;
@@ -287,6 +290,8 @@ public class CartActivity extends AppCompatActivity implements MyCartAdapter.OnI
                                 MyCartModel myCartModel = doc.toObject(MyCartModel.class);
                                 myCartModel.setDocumentId(doc.getId());
                                 tempList.add(myCartModel);
+                                Log.d("Leo", "Fetching for a day raw data : "+doc.getData());
+                                Log.d("Leo"," Fetching for a day"   + myCartModel.toString());
                             }
 
                             // Sort the list by date in descending order (latest first)

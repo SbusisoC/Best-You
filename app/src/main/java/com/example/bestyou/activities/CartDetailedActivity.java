@@ -151,10 +151,10 @@ public class CartDetailedActivity extends AppCompatActivity {
 
                 // Extract sets information
                 int numberOfSets = Integer.parseInt(myCartModel.getNumberOfSets());
-                for (int i = 1; i <= numberOfSets; i++) {
-                    String reps = myCartModel.getSetReps(i);
-                    String weight = myCartModel.getSetWeight(i);
-                    setList.add(new SetModel(i, Integer.parseInt(reps), Integer.parseInt(weight)));
+                for (int i = 0; i < numberOfSets; i++) {
+                    String reps = myCartModel.getSetRepsForPosition(i);
+                    String weight = myCartModel.getSetWeightForPosition(i);
+                    setList.add(new SetModel(i+1, Integer.parseInt(reps), Integer.parseInt(weight)));
                 }
             }
         }

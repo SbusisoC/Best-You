@@ -1,22 +1,13 @@
 package com.example.bestyou.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -24,13 +15,18 @@ import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.bestyou.R;
-/*import com.example.bestyou.models.NewProductsModel;*/
 import com.example.bestyou.adapters.SetEntryAdapter;
+import com.example.bestyou.models.MyCartModel;
 import com.example.bestyou.models.PopularWorkoutsModel;
 import com.example.bestyou.models.ShowAllWorkoutsModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -40,8 +36,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 
 public class DetailedActivity extends AppCompatActivity {
 
@@ -202,19 +198,19 @@ public class DetailedActivity extends AppCompatActivity {
 
     }
 
-      private void addtoPlan() {
-          String saveCurrentTime;
-          Calendar calForDate = Calendar.getInstance();
+    private void addtoPlan() {
+        String saveCurrentTime;
+        Calendar calForDate = Calendar.getInstance();
 
-          // Use selectedDate from date picker if it is set, otherwise use current date
-          SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
-          String saveCurrentDate = (selectedDate != null) ? dateFormat.format(selectedDate.getTime()) : dateFormat.format(calForDate.getTime());
+        // Use selectedDate from date picker if it is set, otherwise use current date
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy");
+        String saveCurrentDate = (selectedDate != null) ? dateFormat.format(selectedDate.getTime()) : dateFormat.format(calForDate.getTime());
 
-          SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
-          saveCurrentTime = currentTime.format(calForDate.getTime());
+        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss a");
+        saveCurrentTime = currentTime.format(calForDate.getTime());
 
-        final HashMap<String, Object> cartMap = new HashMap<>();
-
+        // final HashMap<String, Object> cartMap = new HashMap<>();
+        MyCartModel cartMap = new MyCartModel();
         int numberOfReps = Integer.parseInt(reps.getText().toString());
 
 
@@ -228,37 +224,43 @@ public class DetailedActivity extends AppCompatActivity {
             imageUrl = showAllWorkoutsModel.getImg_url();
             workoutType = showAllWorkoutsModel.getType();
         }
+        cartMap.setImg_url(imageUrl);
 
-        cartMap.put("img_url", imageUrl);
-        cartMap.put("workoutName", name.getText().toString());
-        cartMap.put("bodyPart", bodyPart.getText().toString());
-        cartMap.put("currentTime", saveCurrentTime);
-        cartMap.put("currentDate", saveCurrentDate);
-        cartMap.put("time",System.currentTimeMillis());
-        cartMap.put("numberOfSets", sets.getText().toString());
-        cartMap.put("numberOfReps", reps.getText().toString());
-        cartMap.put("dayPlanned", dayTextView.getText().toString());
-        cartMap.put("type", workoutType);
+       // cartMap.put("img_url", imageUrl);
+        cartMap.setWorkoutName(name.getText().toString());
+        cartMap.setBodyPart(bodyPart.getText().toString());
+        cartMap.setCurrentTime(saveCurrentTime);
+        cartMap.setCurrentDate(saveCurrentDate);
+        cartMap.setTime(System.currentTimeMillis());
+        cartMap.setNumberOfSets(sets.getText().toString());
+        cartMap.setNumberOfReps(reps.getText().toString());
+        cartMap.setDayPlanned(dayTextView.getText().toString());
+        cartMap.setType(workoutType);
+        cartMap.setRepsMap(new ArrayList<>());
+        cartMap.setWeightsMap(new ArrayList<>());
 
-          // Add the selected workout time (if it's a cardio workout)
-          if (selectedTime != null && !selectedTime.isEmpty()) {
-              cartMap.put("workoutTime", selectedTime);
-          }
 
-          // Collecting the sets data
-          int numberOfSets = Integer.parseInt(sets.getText().toString());
-          for (int i = 0; i < numberOfSets; i++) {
-              View view = recyclerView.getLayoutManager().findViewByPosition(i);
-              if (view != null) {
-                  EditText repsEditText = view.findViewById(R.id.editTextReps);
-                  EditText weightEditText = view.findViewById(R.id.weightEntry);
-                  String reps = repsEditText.getText().toString();
-                  String weight = weightEditText.getText().toString();
-                  cartMap.put("set_" + (i + 1) + "_reps", reps);
-                  cartMap.put("set_" + (i + 1) + "_weight", weight);
-              }
-          }
+        // Add the selected workout time (if it's a cardio workout)
+        if (selectedTime != null && !selectedTime.isEmpty()) {
+            cartMap.setWorkoutTime(selectedTime);
+        }
 
+        // Collecting the sets data
+        int numberOfSets = Integer.parseInt(sets.getText().toString());
+        for (int i = 0; i < numberOfSets; i++) {
+            View view = recyclerView.getLayoutManager().findViewByPosition(i);
+            if (view != null) {
+                EditText repsEditText = view.findViewById(R.id.editTextReps);
+                EditText weightEditText = view.findViewById(R.id.weightEntry);
+                String reps = repsEditText.getText().toString();
+                String weight = weightEditText.getText().toString();
+                cartMap.setSetReps(reps);
+                cartMap.setSetWeight(weight);
+                Log.d("LEO", "addtoPlan: adding cart map for sets and reps");
+            }
+        }
+
+        Log.d("LEO", "addtoPlan: final cart : "+cartMap.toString());
         fireStore.collection("AddToCart").document(auth.getCurrentUser().getUid())
                 .collection("User").add(cartMap).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                     @Override
@@ -270,6 +272,7 @@ public class DetailedActivity extends AppCompatActivity {
 
 
     }
+
     private void decrementDay() {
         currentDayIndex = (currentDayIndex - 1 + daysOfWeek.length) % daysOfWeek.length;
     }
@@ -325,6 +328,7 @@ public class DetailedActivity extends AppCompatActivity {
         // Show the dialog
         builder.create().show();
     }
+
     private void showDatePickerDialog() {
         // Get the current date
         Calendar calendar = Calendar.getInstance();

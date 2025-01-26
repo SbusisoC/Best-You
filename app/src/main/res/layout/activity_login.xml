@@ -141,7 +141,7 @@
         app:layout_constraintTop_toBottomOf="@id/texts" />
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/btnSignInWithGoogle"
+        android:id="@+id/btnSignInWithGoogleLeo"
         android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"
